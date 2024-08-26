@@ -27,3 +27,7 @@
 # 项目搭建相关
 
 https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html
+
+# pnpm monorepo——workspace
+
+https://pnpm.io/zh/workspaces

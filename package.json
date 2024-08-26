@@ -27,6 +27,10 @@
   },
   "dependencies": {
     "lodash-es": "^4.17.21",
-    "vue": "^3.4.19"
+    "vue": "^3.4.19",
+    "yu-element": "workspace:*",
+    "@yu-element/hooks": "workspace:*",
+    "@yu-element/theme": "workspace:*",
+    "@yu-element/utils": "workspace:*"
   }
 }
