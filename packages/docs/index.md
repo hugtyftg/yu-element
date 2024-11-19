@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "Yu-Element"
   text: "A ElementPlus-like component library!"
-  tagline: My great project tagline
+  tagline: Modern UI Component Library
   actions:
     - theme: brand
       text: Markdown Examples

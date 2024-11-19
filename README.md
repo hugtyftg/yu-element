@@ -591,36 +591,9 @@ npx vitepress init
 
 根目录下执行`pnpm docs:dev`，会5                                                                                                                                                                                                                                                                                                                                                                               
 
-## [npm script 以及 gihub actions](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#npm-script-以及-gihub-actions)
-
-首先我们创建一些 必要的 npm script
-
-在 根目录 `package.json` 中添加
-
-```
-{
-  "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev",
-    "docs:dev": "pnpm --filter @yu-element/docs dev",
-    "docs:build": "pnpm --filter @yu-element/docs build",
-    "test": "echo \"todo\""
-  }
-}
-```
-
-跑一跑试一下
-
-接下来去 github 创建一个仓库，复制仓库地址
-
-
-
-```
-git remote add origin https://github.com/your-name/your-repo.git
-```
+## [gihub actions](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#npm-script-以及-gihub-actions)
 
 创建一个 `.github/workflows/test-and-deploy.yml` 文件，内容如下
-
-yaml
 
 ```
 name: Test and deploy
