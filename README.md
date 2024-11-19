@@ -348,6 +348,19 @@ export function withInstall<T>(component: T) {
 
 改 package.json 中 入口为 `index.ts`
 
+
+
+> 如果无法识别.vue文件，需要在component内添加env.d.ts文件
+>
+> ```
+> // env.d.ts
+> declare module '*.vue' {
+>   import { ComponentOptions } from 'vue';
+>   const componentOptions: ComponentOptions;
+>   export default componentOptions;
+> }
+> ```
+
 ### core
 
 创建 `index.ts` 、`components.ts`
@@ -523,8 +536,60 @@ pnpm dev
 直接参考官方文档 https://vitepress.dev/zh/guide/getting-started
 
 ```
+cd packages/docs
 npx vitepress init
 ```
+
+```
+➜  docs git:(dev) ✗ npx vitepress init
+
+┌  Welcome to VitePress!
+│
+◇  Where should VitePress initialize the config?
+│  ./
+│
+◇  Site title:
+│  Yu-Element
+│
+◇  Site description:
+│  A ElementPlus-like component library!
+│
+◇  Theme:
+│  Default Theme
+│
+◇  Use TypeScript for config and theme files?
+│  Yes
+│
+◇  Add VitePress npm scripts to package.json?
+│  Yes
+│
+└  Done! Now run npm run docs:dev and start writing.
+
+```
+
+修改package.json
+
+```
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+```
+
+根目录下添加npm script
+
+```
+  "scripts": {
+    "dev": "pnpm --filter @yu-element/play dev",
+    "docs:dev": "pnpm --filter @yu-element/docs dev",
+    "docs:build": "pnpm --filter @yu-element/docs build",
+    "docs:preview": "pnpm --filter @yu-element/docs preview"
+  },
+```
+
+根目录下执行`pnpm docs:dev`，会5                                                                                                                                                                                                                                                                                                                                                                               
 
 ## [npm script 以及 gihub actions](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#npm-script-以及-gihub-actions)
 
@@ -547,7 +612,7 @@ npx vitepress init
 
 接下来去 github 创建一个仓库，复制仓库地址
 
-shell
+
 
 ```
 git remote add origin https://github.com/your-name/your-repo.git

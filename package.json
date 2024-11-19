@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev"
+    "dev": "pnpm --filter @yu-element/play dev",
+    "docs:dev": "pnpm --filter @yu-element/docs dev",
+    "docs:build": "pnpm --filter @yu-element/docs build",
+    "docs:preview": "pnpm --filter @yu-element/docs preview"
   },
   "keywords": [],
   "author": "",
