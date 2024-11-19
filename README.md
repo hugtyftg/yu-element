@@ -591,87 +591,31 @@ npx vitepress init
 
 根目录下执行`pnpm docs:dev`，会5                                                                                                                                                                                                                                                                                                                                                                               
 
-## [gihub actions](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#npm-script-以及-gihub-actions)
+## deploy on Vercel
 
-创建一个 `.github/workflows/test-and-deploy.yml` 文件，内容如下
+傻瓜式操作，注意配置CI脚本和output路径
 
-```
-name: Test and deploy
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  test:
-    name: Run Lint and Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests
-        run: npm run test
-
-  build:
-    name: Build docs
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build docs
-        run: npm run docs:build
-
-      - name: Upload docs
-        uses: actions/upload-artifact@v3
-        with:
-          name: docs
-          path: ./packages/docs/.vitepress/dist
-
-  deploy:
-    name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download docs
-        uses: actions/download-artifact@v3
-        with:
-          name: docs
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: .
-```
-
-去 github 仓库的 setting 中设置 secrets
-
-好了，我们可以提交我们的 “first commit” 了
+![image-20241119203505446](README.assets/image-20241119203505446.png)
 
 ## 参考
 
 https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html
+
+# 工程化配置
+
+## nvm统一node版本
+
+
+
+## commitlint规范commit message
+
+
+
+## eslint+prettier统一代码风格
+
+
+
+## husky监听git hook自动调用脚本
+
+
+
