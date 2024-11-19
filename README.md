@@ -173,14 +173,16 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 - play
 
   将 play/package.json 中冗余部分删除（根目录中已经有了）
-  
+
   ![image-20241118232542777](README.assets/image-20241118232542777.png)
 
-​	删除tsconfig.js和tsconfig.node.js文件，后续在根目录下会新建全局tsconfig.json和tsconfig.node.json文件
+ 删除 tsconfig.js 和 tsconfig.node.js 文件，后续在根目录下会新建全局 tsconfig.json 和 tsconfig.node.json 文件
 
 ## 配置
 
 在根目录创建一些必要额配置文件
+
+### postcss
 
 postcss.config.cjs
 
@@ -198,6 +200,8 @@ module.exports = {
   ],
 };
 ```
+
+### 全局 ts 规则
 
 tsconfig.json
 
@@ -245,207 +249,274 @@ tsconfig.node.json
 }
 ```
 
+## 创建 monorepo 模式下的依赖路径
+
+**根目录下 pnpm install 会建立整个项目和子包以及子包内的连接关系**
+
+**Scope: all 8 workspace projects**
+
+![image-20241119123727559](README.assets/image-20241119123727559.png)
+
 ## [创建各个分包入口](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#创建各个分包-入口)
 
-- components
+### utils
 
-  创建 `index.ts` 以及第一个开胃菜 Button 组件的目录
+组件库需要作为插件被挂载到全局
 
-  我们先在 Button 目录创建一个最简陋的 vue sfc
+一个插件可以是一个install方法，也可以是一个有install方法的对象
 
-  vue
+install函数有两个参数，第一个参数是应用实例，第二个参数是传递给app.use的额外选项
 
-  ```
-  <template>
-    <button style="color:red;">test button</button>
-  </template>
-  ```
+```
+app.use(myPlugin, {
+  /* 可选的选项 */
+})
+type InstallFunction = (app: App, options?: any) => any
+```
 
-  并在 Button 目录中创建 入口 `index.ts` 导出我们的 Button 组件
+创建`install.ts`，包含
 
-  > 注： 这里说明一下，我们这次的组件库项目每个组件的目录大致结构如下,简单统一规范一下
-  >
-  > shell
-  >
-  > ```
-  > - Xxx.test.tsx
-  > - Xxx.vue
-  > - types.ts
-  > - style.css
-  > - index.ts
-  > - * constants.ts
-  > ```
+- withInstall方法用于给组件添加install方法将组件插件化
+- makeInstall方法用于创建注册插件化组件list的install函数
 
-  在 components/index.ts 中导出我们的 Button 组件
+```
+import type { App, Plugin } from 'vue';
+import { each } from 'lodash-es';
 
-  改 package.json 中 入口为 `index.ts`
+type SFCWithInstall<T> = T & Plugin;
 
-- core
+/**
+ * 注册所有插件化的组件
+ * 该插件是一个install函数
+ * @param components 需要被注册的插件
+ * @returns 注册函数
+ */
+export function install(components: Plugin[]) {
+  return (app: App) => each(components, (c) => app.use(c));
+}
 
-  创建 `index.ts` 、`components.ts`
-
-  typescript
-
-  ```
-  // components.ts
-
-  import { ErButton } from "@yu-element/components";
-  import type { Plugin } from "vue";
-
-  export default [ErButton] as Plugin[];
-  ```
-
-  创建 第一个 utils 文件 `install.ts` 用于 vue plugin 安装的一系列操作
-
-  typescript
-
-  ```
-  import type { App, Plugin } from "vue";
-  import { each } from "lodash-es";
-
-  type SFCWithInstall<T> = T & Plugin;
-
-  export function makeInstaller(components: Plugin[]) {
-    const install = (app: App) =>
-      each(components, (c) => {
-        app.use(c);
-      });
-
-    return install;
-  }
-
-  export const withInstall = <T>(component: T) => {
-    (component as SFCWithInstall<T>).install = (app: App) => {
-      const name = (component as any)?.name || "UnnamedComponent";
-      app.component(name, component as SFCWithInstall<T>);
-    };
-    return component as SFCWithInstall<T>;
+/**
+ * 给component添加install方法，使之成为plugin
+ * 该插件是一个具有install方法的component对象
+ * https://cn.vuejs.org/guide/reusability/plugins.html
+ * @param component 作为插件的组件
+ * @returns 插件化的组件
+ */
+export function withInstall<T>(component: T) {
+  (component as SFCWithInstall<T>).install = (app: App) => {
+    const name = (component as any).name;
+    app.component(name, component as Plugin);
   };
-  ```
+  return component;
+}
+```
 
-  在 core/index.ts 中导出我们的 components
+### components
 
-  typescript
+创建 `index.ts` 以及第一个开胃菜 Button 组件的目录
 
-  ```
-  import { makeInstaller } from "@yu-element/utils";
-  import components from "./components";
+我们先在 Button 目录创建一个最简陋的 vue sfc
 
-  const installer = makeInstaller(components);
+```
+<template>
+  <button style="color: red; background-color: #fff;">test button</button>
+</template>
 
-  export * from "@yu-element/components";
-  export default installer;
-  ```
+<script setup>
+  // 在 <script setup> 中声明组件选项
+  // https://cn.vuejs.org/api/sfc-script-setup.html#defineoptions
+  defineOptions({
+    name: 'YuButton'
+  })
+</script>
+```
 
-  改 package.json 中 入口为 `index.ts`
+并在 Button 目录中创建 入口 `index.ts` 导出我们的 Button 组件
 
-- theme 创建 `index.css` 、`reset.css` 在 theme/index.css 中导入 reset.css
+> 注： 这里说明一下，我们这次的组件库项目每个组件的目录大致结构如下,简单统一规范一下
+>
+> ```
+>- Xxx.test.tsx
+> - Xxx.vue
+> - types.ts
+> - style.css
+> - index.ts
+> - * constants.ts
+> ```
 
-  css
+在 components/index.ts 中导出我们的 Button 组件
 
-  ```
-  /** reset.css */
-  body {
-    font-family: var(--er-font-family);
-    font-weight: 400;
-    font-size: var(--er-font-size-base);
-    line-height: calc(var(--er-font-size-base) * 1.2);
-    color: var(--er-text-color-primary);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-tap-highlight-color: transparent;
+改 package.json 中 入口为 `index.ts`
+
+### core
+
+创建 `index.ts` 、`components.ts`
+
+```
+import { YuButton } from '../components';
+import type { Plugin } from 'vue';
+
+export default [YuButton] as Plugin[];
+
+```
+
+在 core/index.ts 中导出我们的 components
+
+```
+import { install } from '@yu-element/utils';
+import components from './components';
+// 全局导入样式
+import '@yu-element/theme/index.css';
+
+// 注册所有组件的函数
+const installer = install(components);
+
+export * from '@yu-element/components';
+export default installer;
+```
+
+改 package.json 中 入口为 `index.ts`
+
+### theme
+
+theme 创建 `index.css` 、`reset.css` 在 theme/index.css 中导入 reset.css
+
+```
+/** reset.css */
+body {
+  font-family: var(--er-font-family);
+  font-weight: 400;
+  font-size: var(--er-font-size-base);
+  line-height: calc(var(--er-font-size-base) * 1.2);
+  color: var(--er-text-color-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: var(--er-color-primary);
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: var(--er-color-primary-light-3);
   }
-  
-  a {
-    color: var(--er-color-primary);
-    text-decoration: none;
-  
-    &:hover,
-    &:focus {
-      color: var(--er-color-primary-light-3);
-    }
-  
-    &:active {
-      color: var(--er-color-primary-dark-2);
-    }
-  }
-  
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    color: var(--er-text-color-regular);
-    font-weight: inherit;
-  
-    &:first-child {
-      margin-top: 0;
-    }
-  
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  
-  h1 {
-    font-size: calc(var(--er-font-size-base) + 6px);
-  }
-  
-  h2 {
-    font-size: calc(var(--er-font-size-base) + 4px);
-  }
-  
-  h3 {
-    font-size: calc(var(--er-font-size-base) + 2px);
-  }
-  
-  h4,
-  h5,
-  h6,
-  p {
-    font-size: inherit;
-  }
-  
-  p {
-    line-height: 1.8;
-  
-    &:first-child {
-      margin-top: 0;
-    }
-  
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  
-  sup,
-  sub {
-    font-size: calc(var(--er-font-size-base) - 1px);
-  }
-  
-  small {
-    font-size: calc(var(--er-font-size-base) - 2px);
-  }
-  
-  hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 0;
-    border-top: 1px solid var(--er-border-color-lighter);
-  }
-  ```
 
-  css
+  &:active {
+    color: var(--er-color-primary-dark-2);
+  }
+}
 
-  ```
-  /** index.css */
-  @import "./reset.css";
-  ```
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--er-text-color-regular);
+  font-weight: inherit;
 
-  改 package.json 中 入口为 `index.css` 在 core/index.ts 中导出我们的 theme
+  &:first-child {
+    margin-top: 0;
+  }
 
-  好，我们去 play 目录中看看效果
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+h1 {
+  font-size: calc(var(--er-font-size-base) + 6px);
+}
+
+h2 {
+  font-size: calc(var(--er-font-size-base) + 4px);
+}
+
+h3 {
+  font-size: calc(var(--er-font-size-base) + 2px);
+}
+
+h4,
+h5,
+h6,
+p {
+  font-size: inherit;
+}
+
+p {
+  line-height: 1.8;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+sup,
+sub {
+  font-size: calc(var(--er-font-size-base) - 1px);
+}
+
+small {
+  font-size: calc(var(--er-font-size-base) - 2px);
+}
+
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid var(--er-border-color-lighter);
+}
+```
+
+```
+/** index.css */
+@import "./reset.css";
+```
+
+改 package.json 中 入口为 `index.css` 
+
+```
+{
+  "name": "@yu-element/theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.css",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+```
+
+在 core/index.ts 中导入样式
+
+## 在play中演练实时效果
+
+### 添加脚本
+
+在 根目录 `package.json` 中添加命令，-- filter用于指定分包
+
+```
+  "scripts": {
+    "dev": "pnpm --filter @yu-element/play dev"
+  },
+```
+
+### 启动工程
+
+```
+pnpm dev
+```
+
+
 
 ## [创建 VitePress 文档](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#创建vitepress文档)
 
@@ -460,8 +531,6 @@ npx vitepress init
 首先我们创建一些 必要的 npm script
 
 在 根目录 `package.json` 中添加
-
-json
 
 ```
 {

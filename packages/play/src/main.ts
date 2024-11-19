@@ -1,5 +1,10 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import { createApp } from 'vue';
+import './style.css';
+import App from './App.vue';
+// 导出installer
+import YuElement from 'yu-element';
 
-createApp(App).mount('#app')
+createApp(App)
+  // 注册组件库
+  .use(YuElement)
+  .mount('#app');

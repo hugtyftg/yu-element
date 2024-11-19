@@ -112,15 +112,6 @@ importers:
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
         version: 5.1.2(vite@5.4.2)(vue@3.4.38)
-      typescript:
-        specifier: ^5.2.2
-        version: 5.5.4
-      vite:
-        specifier: ^5.2.0
-        version: 5.4.2(@types/node@20.16.1)
-      vue-tsc:
-        specifier: ^2.0.6
-        version: 2.0.29(typescript@5.5.4)
 
   packages/theme: {}
 
@@ -1232,20 +1223,10 @@ packages:
       '@volar/source-map': 1.11.1
     dev: true
 
-  /@volar/language-core@2.4.0:
-    resolution: {integrity: sha512-FTla+khE+sYK0qJP+6hwPAAUwiNHVMph4RUXpxf/FIPKUP61NFrVZorml4mjFShnueR2y9/j8/vnh09YwVdH7A==, tarball: https://registry.npmmirror.com/@volar/language-core/-/language-core-2.4.0.tgz}
-    dependencies:
-      '@volar/source-map': 2.4.0
-    dev: true
-
   /@volar/source-map@1.11.1:
     resolution: {integrity: sha512-hJnOnwZ4+WT5iupLRnuzbULZ42L7BWWPMmruzwtLhJfpDVoZLjNBxHDi2sY2bgZXCKlpU5XcsMFoYrsQmPhfZg==, tarball: https://registry.npmmirror.com/@volar/source-map/-/source-map-1.11.1.tgz}
     dependencies:
       muggle-string: 0.3.1
-    dev: true
-
-  /@volar/source-map@2.4.0:
-    resolution: {integrity: sha512-2ceY8/NEZvN6F44TXw2qRP6AQsvCYhV2bxaBPWxV9HqIfkbRydSksTFObCF1DBDNBfKiZTS8G/4vqV6cvjdOIQ==, tarball: https://registry.npmmirror.com/@volar/source-map/-/source-map-2.4.0.tgz}
     dev: true
 
   /@volar/typescript@1.11.1:
@@ -1253,14 +1234,6 @@ packages:
     dependencies:
       '@volar/language-core': 1.11.1
       path-browserify: 1.0.1
-    dev: true
-
-  /@volar/typescript@2.4.0:
-    resolution: {integrity: sha512-9zx3lQWgHmVd+JRRAHUSRiEhe4TlzL7U7e6ulWXOxHH/WNYxzKwCvZD7WYWEZFdw4dHfTD9vUR0yPQO6GilCaQ==, tarball: https://registry.npmmirror.com/@volar/typescript/-/typescript-2.4.0.tgz}
-    dependencies:
-      '@volar/language-core': 2.4.0
-      path-browserify: 1.0.1
-      vscode-uri: 3.0.8
     dev: true
 
   /@vue/babel-helper-vue-transform-on@1.2.2:
@@ -1338,13 +1311,6 @@ packages:
       '@vue/compiler-dom': 3.4.38
       '@vue/shared': 3.4.38
 
-  /@vue/compiler-vue2@2.7.16:
-    resolution: {integrity: sha512-qYC3Psj9S/mfu9uVi5WvNZIzq+xnXMhOwbTFKKDD7b1lhpnn71jXSFdTQ+WsIEk0ONCd7VV2IMm7ONl6tbQ86A==, tarball: https://registry.npmmirror.com/@vue/compiler-vue2/-/compiler-vue2-2.7.16.tgz}
-    dependencies:
-      de-indent: 1.0.2
-      he: 1.2.0
-    dev: true
-
   /@vue/devtools-api@7.6.4:
     resolution: {integrity: sha512-5AaJ5ELBIuevmFMZYYLuOO9HUuY/6OlkOELHE7oeDhy4XD/hSODIzktlsvBOsn+bto3aD0psj36LGzwVu5Ip8w==, tarball: https://registry.npmmirror.com/@vue/devtools-api/-/devtools-api-7.6.4.tgz}
     dependencies:
@@ -1387,25 +1353,6 @@ packages:
       path-browserify: 1.0.1
       typescript: 5.5.4
       vue-template-compiler: 2.7.16
-    dev: true
-
-  /@vue/language-core@2.0.29(typescript@5.5.4):
-    resolution: {integrity: sha512-o2qz9JPjhdoVj8D2+9bDXbaI4q2uZTHQA/dbyZT4Bj1FR9viZxDJnLcKVHfxdn6wsOzRgpqIzJEEmSSvgMvDTQ==, tarball: https://registry.npmmirror.com/@vue/language-core/-/language-core-2.0.29.tgz}
-    peerDependencies:
-      typescript: '*'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      '@volar/language-core': 2.4.0
-      '@vue/compiler-dom': 3.4.38
-      '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.4.38
-      computeds: 0.0.1
-      minimatch: 9.0.5
-      muggle-string: 0.4.1
-      path-browserify: 1.0.1
-      typescript: 5.5.4
     dev: true
 
   /@vue/reactivity@3.4.38:
@@ -2497,10 +2444,6 @@ packages:
     resolution: {integrity: sha512-ckmWDJjphvd/FvZawgygcUeQCxzvohjFO5RxTjj4eq8kw359gFF3E1brjfI+viLMxss5JrHTDRHZvu2/tuy0Qg==, tarball: https://registry.npmmirror.com/muggle-string/-/muggle-string-0.3.1.tgz}
     dev: true
 
-  /muggle-string@0.4.1:
-    resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==, tarball: https://registry.npmmirror.com/muggle-string/-/muggle-string-0.4.1.tgz}
-    dev: true
-
   /nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==, tarball: https://registry.npmmirror.com/nanoid/-/nanoid-3.3.7.tgz}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -3319,10 +3262,6 @@ packages:
       - terser
     dev: true
 
-  /vscode-uri@3.0.8:
-    resolution: {integrity: sha512-AyFQ0EVmsOZOlAnxoFOGOq1SQDWAB7C6aqMGS23svWAllfOaxbuFvcT8D1i8z3Gyn8fraVeZNNmN6e9bxxXkKw==, tarball: https://registry.npmmirror.com/vscode-uri/-/vscode-uri-3.0.8.tgz}
-    dev: true
-
   /vue-component-type-helpers@2.1.10:
     resolution: {integrity: sha512-lfgdSLQKrUmADiSV6PbBvYgQ33KF3Ztv6gP85MfGaGaSGMTXORVaHT1EHfsqCgzRNBstPKYDmvAV9Do5CmJ07A==, tarball: https://registry.npmmirror.com/vue-component-type-helpers/-/vue-component-type-helpers-2.1.10.tgz}
     dev: true
@@ -3357,18 +3296,6 @@ packages:
     dependencies:
       '@volar/typescript': 1.11.1
       '@vue/language-core': 1.8.27(typescript@5.5.4)
-      semver: 7.6.3
-      typescript: 5.5.4
-    dev: true
-
-  /vue-tsc@2.0.29(typescript@5.5.4):
-    resolution: {integrity: sha512-MHhsfyxO3mYShZCGYNziSbc63x7cQ5g9kvijV7dRe1TTXBRLxXyL0FnXWpUF1xII2mJ86mwYpYsUmMwkmerq7Q==, tarball: https://registry.npmmirror.com/vue-tsc/-/vue-tsc-2.0.29.tgz}
-    hasBin: true
-    peerDependencies:
-      typescript: '>=5.0.0'
-    dependencies:
-      '@volar/typescript': 2.4.0
-      '@vue/language-core': 2.0.29(typescript@5.5.4)
       semver: 7.6.3
       typescript: 5.5.4
     dev: true

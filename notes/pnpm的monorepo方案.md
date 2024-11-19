@@ -229,6 +229,8 @@ w 标识 monorepo workspace 工作模式，在项目根目录下安装子包也�
 
 ## 子包管理操作【package 内各子目录】
 
+### `--filter <package-name>`指定子包
+
 在 `workspace` 模式下，`pnpm` 主要**通过 `--filter` 选项过滤选定子模块**，实现对各个工作空间进行精细化操作的目的。
 
 ### 为指定模块安装外部第三方依赖
