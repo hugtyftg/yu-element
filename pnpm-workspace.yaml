@@ -1,2 +1,5 @@
+# 定义工作空间，packages下的所有子目录各自会被视为独立的模块
+# pnpm通过每个模块的package.json的name区分和识别不同的project
+# pnpm add中-w代表在monorepo模式下的根目录安装公共依赖，变种为-wD
 packages:
-  - "packages/*"
+  - 'packages/*'
