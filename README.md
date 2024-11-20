@@ -611,7 +611,7 @@ https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html
 
 ```
 // 安装commitlint
-npm install @commitlint/config-conventional @commitlint/cli -D
+pnpm install @commitlint/config-conventional @commitlint/cli -Dw
 ```
 
 根目录增加其配置文件`commitlint.config.js`
@@ -658,16 +658,123 @@ rule配置说明:：rule由name和配置数组组成，如：'name:[0, 'always',
 
 ## eslint+prettier统一代码风格
 
+eslint是一个开源项目，static code analysis tool，它可以静态分析js或JSX代码，按照内置规则或者自定义规则发现代码中的问题、提供自动修复方案，web端和服务器端都可以使用，任何框架下也都可以使用，甚至没有框架也可以使用
 
+### ESLint
+
+#### 1.安装
+
+```
+# 全局安装eslint包（也可以在项目内安装，参考官网）
+npm i -g eslint
+```
+
+#### 2.初始化
+
+```
+# 在当前项目目录下执行eslint初始化
+npx eslint --init
+```
+
+![image-20241111171124738](README.assets/image-20241111171124738.png)
+
+#### 3.手动校验指定文件
+
+```
+# 校验指定文件的格式，但是仅仅是列出来而已，并没有编辑区的视觉提示
+eslint 文件路径
+```
+
+![image-20241111172250379](README.assets/image-20241111172250379.png)
+
+#### 4.插件自动校验与显示
+
+ESLint插件——无需手动执行命令，编辑区就能看到波浪线提示
+
+![image-20241111172719318](README.assets/image-20241111172719318.png)
+
+#### 5.进阶——package.json中配置整体lint校验
+
+```
+  "scripts": {
+    "dev": "vite",
+    "lint": "eslint ."
+  },
+```
+
+#### 6.进阶——禁用某些rule
+
+覆盖掉默认设置即可，对于pluginVue.configs也是类似的思路
+
+```
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
+
+const offRules = {
+  '@typescript-eslint/no-explicit-any': 'off',
+  '@typescript-eslint/no-require-imports': 'off',
+};
+
+/** @type {import('eslint').Linter.Config[]} */
+export default [
+  { files: ['**/*.{js,mjs,cjs,ts,vue}'] },
+  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended.map((rulesObj) => {
+    if (rulesObj.name === 'typescript-eslint/recommended') {
+      return {
+        name: 'typescript-eslint/recommended',
+        rules: {
+          ...rulesObj.rules,
+          ...offRules,
+        },
+      };
+    }
+    return rulesObj;
+  }),
+  ...pluginVue.configs['flat/essential'],
+  {
+    files: ['**/*.vue'],
+    languageOptions: { parserOptions: { parser: tseslint.parser } },
+  },
+];
+```
+
+
+
+### prettier
+
+#### 1.安装
+
+```
+pnpm i prettier -Dw
+```
+
+#### 2.手动添加.prettierrc配置文件
+
+#### 3.手动格式化指定文件
+
+```
+npx prettier --write 文件路径
+```
+
+#### 4.自动可视化插件 vscode prettier
+
+## 注意
+
+通过npm下载并配置到项目内的ESLint，在ide/编辑器不安装ESLint插件时，也能正常工作
+
+换言之，不推荐只安装ESLint插件而不给项目整体配置ESLint，因为有的coworker可能不想安装！
+
+ESLint局限性，只能处理js文件，不能处理css、JSON等文件，prettier可以处理多种文件
+
+**ESLint和Prettier的配置注意不要冲突**
 
 ## husky自动化检查
 
 husky是一个git hook的管理工具，实现了大部分的git hook。一般情况下，**commitlint会用在git的hook回调中**，如果不想自己写[githook](https://git-scm.com/docs/githooks)s，那么最简单的就是和 husky一起使用。
-
-```
-//安装husky
-npm install huksy -D
-```
 
 ```
 // 在package.json中配置husky. hooks
@@ -689,7 +796,7 @@ husky的作用就是给commit的动作加上一个hook，当commit动作触发�
 ### 1.生成.husky文件夹
 
 ```
-npx husky install
+pnpm i husky -Dw
 ```
 
 ### 2.在`.husky`文件夹下面创建commit-msg文件(不要任何的后缀)
