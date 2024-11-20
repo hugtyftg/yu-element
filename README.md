@@ -609,13 +609,107 @@ https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html
 
 ## commitlint规范commit message
 
+```
+// 安装commitlint
+npm install @commitlint/config-conventional @commitlint/cli -D
+```
 
+根目录增加其配置文件`commitlint.config.js`
+
+```
+module.exports = {
+  extends: ['@commitlint/config-conventional'],
+};
+```
+
+一般情况下，默认的就够用了。
+
+当然，如果需要自定义限制这些规则，不启用默认的规则，可以把配置写的更详细
+
+```
+module.exports = {
+  extends: [
+    "@commitlint/config-conventional"
+  ],
+  rules: {
+    'type-enum': [2, 'always', [
+      'upd', 'feat', 'fix', 'refactor', 'docs', 'chore', 'style', 'revert'
+     ]],// type类型
+    'type-case': [0],
+    'type-empty': [0],
+    'scope-empty': [0],
+    'scope-case': [0],
+    'subject-full-stop': [0, 'never'],
+    'subject-case': [0, 'never'],
+    'header-max-length': [0, 'always', 72]
+  }
+};
+```
+
+rule配置说明:：rule由name和配置数组组成，如：'name:[0, 'always', 72]'，
+
+数组中第一位为level，可选0,1,2，0为disable，1为warning，2为error，
+
+第二位为应用与否，可选always|never，
+
+第三位该rule的值。
+
+具体配置项参考其[官方文档](https://commitlint.js.org/#/reference-configuration)
 
 ## eslint+prettier统一代码风格
 
 
 
-## husky监听git hook自动调用脚本
+## husky自动化检查
+
+husky是一个git hook的管理工具，实现了大部分的git hook。一般情况下，**commitlint会用在git的hook回调中**，如果不想自己写[githook](https://git-scm.com/docs/githooks)s，那么最简单的就是和 husky一起使用。
+
+```
+//安装husky
+npm install huksy -D
+```
+
+```
+// 在package.json中配置husky. hooks
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo 我要提交代码啦",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-push": "echo 我要推送代码啦"
+    }
+  }  
+}
+```
+
+通过HUSKY_GIT_PARAMS传递参数，-E|--env用于指向相关的编辑文件。
+
+husky的作用就是给commit的动作加上一个hook，当commit动作触发的时候，自动执行commitlint检查
+
+### 1.生成.husky文件夹
+
+```
+npx husky install
+```
+
+### 2.在`.husky`文件夹下面创建commit-msg文件(不要任何的后缀)
+
+```
+npx --no -- commitlint --edit "${1}"
+```
+
+> 文件名就表示勾住git中的哪个hook（commit-msg）
 
 
 
+除此之外，husky还可以增加其他的hook如pre-commit
+
+```shell
+npx husky add .husky/pre-commit "npm test"
+```
+
+> pre-commit，这个hook的效果是，在commit之前，跑一遍测试
+
+### 3.完成，测试
+
+![image-20241120120544608](README.assets/image-20241120120544608.png)
