@@ -603,9 +603,48 @@ https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html
 
 # 工程化配置
 
-## nvm统一node版本
+## .nvmrc规范node版本
 
+### 1. 前言
 
+当开发多个项目时，每个项目运行环境要求的 node 版本不一样，那么我们就需要给每个项目指定 node 版本，也就是通过终端执行 nvm install 和 nvm use 命令去安装并切换版本。
+
+但是每次都要在终端手动执行命令就很麻烦，特别是项目越来越多的时候，容易忘记切换版本或切换错版本，会导致项目启动不了或运行中有一些错误。
+
+这就需要一个管理 node 版本的方法，自动切换 node 版本，这时 .nvmrc 就该上场了
+
+### 2. .nvmrc 是什么
+
+.nvmrc 的作用：便于切换 node 版本，保证多人开发环境的一致性
+
+.nvmrc 是一个文件，文件内容非常简单，只有一个 nvm 可识别的 node 版本文本内容，比如: v12.18.2，这个文件应该放在项目根目录下，并且不应被 git 忽略
+
+### 3. 创建 .nvmrc 文件
+
+```
+v18.20.5
+```
+
+### 4. 使用 .nvmrc 文件
+
+在有 .nvmrc 文件的目录执行以下命令，会读取并尝试切换 .nvmrc 中的 node 版本
+
+该命令会从当前目录向上遍历目录结构寻找 .nvmrc 文件，在带有 .nvmrc 的目录的任何子目录运行该命令都会起作用
+
+```
+nvm use xxx
+```
+
+如果 .nvmrc 中的 node 版本已安装，当前终端窗口的 node 将自动切换为该版本
+
+### 5.查看所有node版本
+
+```
+➜  yu-element git:(dev) ✗ nvm list
+       v16.20.1
+       v18.20.5
+->       system
+```
 
 ## commitlint规范commit message
 
@@ -762,7 +801,7 @@ npx prettier --write 文件路径
 
 #### 4.自动可视化插件 vscode prettier
 
-## 注意
+### 注意
 
 通过npm下载并配置到项目内的ESLint，在ide/编辑器不安装ESLint插件时，也能正常工作
 

@@ -8,7 +8,8 @@
     "docs:dev": "pnpm --filter @yu-element/docs dev",
     "docs:build": "pnpm --filter @yu-element/docs build",
     "docs:preview": "pnpm --filter @yu-element/docs preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "pnpm --filter @yu-element/components test"
   },
   "husky": {
     "hooks": {
