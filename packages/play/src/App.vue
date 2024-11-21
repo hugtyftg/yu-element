@@ -4,5 +4,5 @@ import { YuButton } from 'yu-element'
 </script>
 
 <template>
-  <YuButton size="default">test</YuButton>
+  <YuButton type="primary" size="default">test</YuButton>
 </template>

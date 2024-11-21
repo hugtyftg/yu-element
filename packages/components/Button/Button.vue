@@ -4,6 +4,7 @@ import type { ButtonProps } from "./types";
 defineOptions({
   name: "ErButton",
 });
+// 响应式props的默认值覆盖
 const props = withDefaults(defineProps<ButtonProps>(), {
   tag: 'button',
   nativeType: 'button'
@@ -13,9 +14,9 @@ const _ref = ref<HTMLButtonElement>();
 </script>
 
 <template>
-  <component :is="tag" ref="_ref" class="er-button" :class="{
-    [`er-button--${type}`]: props.type,
-    [`er-button--${size}`]: props.size,
+  <component :is="tag" ref="_ref" class="yu-button" :class="{
+    [`yu-button--${type}`]: props.type,
+    [`yu-button--${size}`]: props.size,
     'is-plain': props.plain,
     'is-round': props.round,
     'is-circle': props.circle,
@@ -26,3 +27,7 @@ const _ref = ref<HTMLButtonElement>();
     <slot>default slot</slot>
   </component>
 </template>
+
+<style scoped>
+@import './style.css';
+</style>
