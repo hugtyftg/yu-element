@@ -4,5 +4,5 @@ import { YuButton } from 'yu-element'
 </script>
 
 <template>
-  <YuButton type="primary" size="default">test</YuButton>
+  <YuButton type="primary" size="default" :throttle-duration="1000" @click="() => console.log(123)">test</YuButton>
 </template>
