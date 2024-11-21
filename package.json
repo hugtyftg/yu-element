@@ -9,7 +9,8 @@
     "docs:build": "pnpm --filter @yu-element/docs build",
     "docs:preview": "pnpm --filter @yu-element/docs preview",
     "lint": "eslint .",
-    "test": "pnpm --filter @yu-element/components test"
+    "test": "pnpm --filter @yu-element/components test",
+    "storybook": "pnpm --filter @yu-element/play storybook"
   },
   "husky": {
     "hooks": {

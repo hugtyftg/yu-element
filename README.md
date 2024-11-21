@@ -859,3 +859,61 @@ npx husky add .husky/pre-commit "npm test"
 ### 3.完成，测试
 
 ![image-20241120120544608](README.assets/image-20241120120544608.png)
+
+# 样式
+
+## 全局样式
+
+reset.css覆盖浏览器默认样式
+
+index.css定义全局通用变量
+
+## 组件样式
+
+绑定class，并利用字符串拼接出类名
+
+style.css内引入类名
+
+style scoped标签局部引入样式防止污染。样式穿透需要借助:deep()语法
+
+# storybook
+
+## 安装
+
+在playground内安装storybook，会多出两个目录 
+
+```
+pnpm dlx storybook@latest init
+```
+
+
+
+![image-20241121184813415](README.assets/image-20241121184813415.png)
+
+## 书写组件的Example
+
+以Button组件为例，在src/stories下新建Button.stories.ts，书写：
+
+- 沙盒容器
+- 沙盒内容
+- 配置页信息，如标题、组件、标签、参数类型
+- 默认页信息
+
+## 脚本命令
+
+play目录中的storybook命令可以本地开启storybook
+
+在根目录下通过pnpm --filter添加storybook script即可
+
+```
+  "scripts": {
+    "dev": "pnpm --filter @yu-element/play dev",
+    "docs:dev": "pnpm --filter @yu-element/docs dev",
+    "docs:build": "pnpm --filter @yu-element/docs build",
+    "docs:preview": "pnpm --filter @yu-element/docs preview",
+    "lint": "eslint .",
+    "test": "pnpm --filter @yu-element/components test",
+    "storybook": "pnpm --filter @yu-element/play storybook"
+  },
+```
+
