@@ -176,7 +176,7 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 
   ![image-20241118232542777](README.assets/image-20241118232542777.png)
 
- 删除 tsconfig.js 和 tsconfig.node.js 文件，后续在根目录下会新建全局 tsconfig.json 和 tsconfig.node.json 文件
+删除 tsconfig.js 和 tsconfig.node.js 文件，后续在根目录下会新建全局 tsconfig.json 和 tsconfig.node.json 文件
 
 ## 配置
 
@@ -336,7 +336,7 @@ export function withInstall<T>(component: T) {
 > 注： 这里说明一下，我们这次的组件库项目每个组件的目录大致结构如下,简单统一规范一下
 >
 > ```
->- Xxx.test.tsx
+> - Xxx.test.tsx
 > - Xxx.vue
 > - types.ts
 > - style.css
@@ -347,8 +347,6 @@ export function withInstall<T>(component: T) {
 在 components/index.ts 中导出我们的 Button 组件
 
 改 package.json 中 入口为 `index.ts`
-
-
 
 > 如果无法识别.vue文件，需要在component内添加env.d.ts文件
 >
@@ -492,7 +490,7 @@ hr {
 @import "./reset.css";
 ```
 
-改 package.json 中 入口为 `index.css` 
+改 package.json 中 入口为 `index.css`
 
 ```
 {
@@ -528,8 +526,6 @@ hr {
 ```
 pnpm dev
 ```
-
-
 
 ## [创建 VitePress 文档](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#创建vitepress文档)
 
@@ -589,7 +585,7 @@ npx vitepress init
   },
 ```
 
-根目录下执行`pnpm docs:dev`，会5                                                                                                                                                                                                                                                                                                                                                                               
+根目录下执行`pnpm docs:dev`，会5
 
 ## deploy on Vercel
 
@@ -781,8 +777,6 @@ export default [
 ];
 ```
 
-
-
 ### prettier
 
 #### 1.安装
@@ -824,7 +818,7 @@ husky是一个git hook的管理工具，实现了大部分的git hook。一般�
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-push": "echo 我要推送代码啦"
     }
-  }  
+  }
 }
 ```
 
@@ -845,8 +839,6 @@ npx --no -- commitlint --edit "${1}"
 ```
 
 > 文件名就表示勾住git中的哪个hook（commit-msg）
-
-
 
 除此之外，husky还可以增加其他的hook如pre-commit
 
@@ -880,13 +872,11 @@ style scoped标签局部引入样式防止污染。样式穿透需要借助:deep
 
 ## 安装
 
-在playground内安装storybook，会多出两个目录 
+在playground内安装storybook，会多出两个目录
 
 ```
 pnpm dlx storybook@latest init
 ```
-
-
 
 ![image-20241121184813415](README.assets/image-20241121184813415.png)
 
@@ -917,3 +907,36 @@ play目录中的storybook命令可以本地开启storybook
   },
 ```
 
+# icon
+
+## 安装并引入fontawesome
+
+```
+➜  yu-element git:(dev) ✗ pnpm i -Dw @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/vue-fontawesome
+```
+
+需要在core文件中引入应使用fontawesome才能生效
+
+## 书写Icon组件
+
+## 融合Button
+
+## storybook 测试案例
+
+```js
+  // 默认页的测试用例
+  play: async ({ canvasElement, args, step }) => {
+    // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
+    const canvas = within(canvasElement);
+    // 测试步骤：单次点击页面中第一个button按钮
+    await step('click button', async () => {
+      await userEvent.click(canvas.getByRole('button'));
+    });
+    // 期望结果：验证 args 对象中的 onClick 方法是否被调用
+    expect(args.onClick).toBeCalled();
+  },
+```
+
+默认页面的interactions tab自动执行了测试步骤
+
+![image-20241130144717822](README.assets/image-20241130144717822.png)

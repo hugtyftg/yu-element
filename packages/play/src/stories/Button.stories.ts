@@ -1,5 +1,5 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3';
-import { fn } from '@storybook/test';
+import { expect, fn, userEvent, within } from '@storybook/test';
 import { YuButton } from 'yu-element';
 
 // 沙盒容器
@@ -91,5 +91,16 @@ export const Default: Story & { args: { content: string } } = {
     },
     template: container(content),
   }),
+  // 默认页的测试用例
+  play: async ({ canvasElement, args, step }) => {
+    // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
+    const canvas = within(canvasElement);
+    // 测试步骤：单次点击页面中第一个button按钮
+    await step('click button', async () => {
+      await userEvent.click(canvas.getByRole('button'));
+    });
+    // 期望结果：验证 args 对象中的 onClick 方法是否被调用
+    expect(args.onClick).toBeCalled();
+  },
 };
 export default meta;
