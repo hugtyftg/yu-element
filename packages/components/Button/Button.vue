@@ -7,26 +7,27 @@ defineOptions({
   name: "ErButton",
 });
 
-// 响应式props的默认值覆盖
+/* 响应式props的默认值覆盖 */
 const props = withDefaults(defineProps<ButtonProps>(), {
   tag: 'button',
   nativeType: 'button',
   useThrottle: true,
-  throttleDuration: 500
+  throttleDuration: 10000
 });
 
-// 插槽
+/* 插槽 */
 const slots = defineSlots();
 
-// 图标样式（按钮内有插槽文字时，需要设置间隔）
+/* 图标样式（按钮内有插槽文字时，需要设置间隔） */
 const iconStyle = computed(() => ({ marginRight: slots.default ? '6px' : '0px' }))
 
-// 事件
+/* 事件 */
 const emit = defineEmits<ButtonEmits>();
 const handleClick = (e: MouseEvent) => emit('click', e);
-const throttleHandleClick = throttle(handleClick, props.throttleDuration);
+// trailing和leading决定函数invoke执行时机是在节流开始时还是结束时
+const throttleHandleClick = throttle(handleClick, props.throttleDuration, { trailing: false, });
 
-// 子传父
+/* 子传父 */
 const _ref = ref<HTMLButtonElement>();
 defineExpose<ButtonExpose>({
   ref: _ref
