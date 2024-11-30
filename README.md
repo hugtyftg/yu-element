@@ -868,6 +868,24 @@ style.css内引入类名
 
 style scoped标签局部引入样式防止污染。样式穿透需要借助:deep()语法
 
+# Button组件
+
+每个组件的目录格式：
+
+- index.vue：主要模版和逻辑
+- index.ts：包装必备方法如install后再把插件暴露到外界
+- types.ts：组件prpos、emit等类型
+- style.css：样式
+- Xxx.test.tsx：vitest测试文件
+
+## 主要逻辑
+
+1. props默认值覆盖
+2. 注册emit，并根据props确定是否要节流包装handler
+3. 插槽
+4. 通过define Expose向父组件暴露Button组件的dom
+5. 根据props中的type、size等绑定class
+
 # storybook
 
 ## 安装
@@ -907,7 +925,7 @@ play目录中的storybook命令可以本地开启storybook
   },
 ```
 
-# icon
+# Icon
 
 ## 安装并引入fontawesome
 
@@ -917,9 +935,37 @@ play目录中的storybook命令可以本地开启storybook
 
 需要在core文件中引入应使用fontawesome才能生效
 
-## 书写Icon组件
+```
+// 引入fontawesome
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+library.add(fas);
+```
+
+## 主要逻辑
+
+- 核心图标为fontawesome，外部通过i标签包裹
+- inheritAttrs: false与v-bind="$attrs"
 
 ## 融合Button
+
+### loading状态图标
+
+```
+    <!-- loading图标样式 -->
+    <template v-if="props.loading">
+      <slot name="loading">
+        <YuIcon class="loading-icon" :icon="loadingIcon ?? 'spinner'" :style="iconStyle" size="1x" />
+      </slot>
+    </template>
+```
+
+### 非loading状态设置图标
+
+```
+    <!-- 不loading时的默认图标样式 -->
+    <YuIcon v-if="props.icon && !props.loading" :icon="props.icon" :style="iconStyle" />
+```
 
 ## storybook 测试案例
 
