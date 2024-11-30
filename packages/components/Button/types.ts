@@ -4,7 +4,8 @@ export type NativeType = 'button' | 'submit' | 'reset';
 export type ButtonSize = 'default' | 'large' | 'small';
 
 export interface ButtonProps {
-  tag?: string | Component;
+  tag?: 'button' | 'a' | 'div' | Component;
+  nativeType?: NativeType;
   type?: ButtonType;
   size?: ButtonSize;
   plain?: boolean;
@@ -12,7 +13,6 @@ export interface ButtonProps {
   circle?: boolean;
   disabled?: boolean;
   autofocus?: boolean;
-  nativeType?: NativeType;
   icon?: string;
   loading?: boolean;
   loadingIcon?: string;
