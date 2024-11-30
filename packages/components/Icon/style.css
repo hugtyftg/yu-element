@@ -1,0 +1,17 @@
+.yu-icon {
+  --yu-icon-color: inherit;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  fill: currentColor;
+  color: var(--yu-icon-color);
+  font-size: inherit;
+}
+
+/* 结合预设全局css var批量定义不同type的样式 */
+@each $val in primary, info, success, warning, danger {
+  .yu-icon--$(val) {
+    --yu-icon-color: var(--yu-color-$(val));
+  }
+}
