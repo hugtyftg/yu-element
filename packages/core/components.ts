@@ -1,4 +1,4 @@
-import { YuButton } from '../components';
+import { YuButton, YuIcon } from '@yu-element/components';
 import type { Plugin } from 'vue';
 
-export default [YuButton] as Plugin[];
+export default [YuButton, YuIcon] as unknown as Plugin[];
