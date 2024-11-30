@@ -11,7 +11,7 @@ const container = (val: string) => `
 // 沙盒内容
 const content = `<yu-button v-bind="args">{{args.content}}</yu-button>`;
 
-type Story = StoryObj<typeof YuButton> & { argTypes: ArgTypes };
+type Story = StoryObj<typeof YuButton> & { argTypes?: ArgTypes };
 
 // 配置页信息
 const meta: Meta<typeof YuButton> = {
@@ -97,6 +97,31 @@ export const Default: Story & { args: { content: string } } = {
     const canvas = within(canvasElement);
     // 测试步骤：单次点击页面中第一个button按钮
     await step('click button', async () => {
+      await userEvent.click(canvas.getByRole('button'));
+    });
+    // 期望结果：验证 args 对象中的 onClick 方法是否被调用
+    expect(args.onClick).toBeCalled();
+  },
+};
+
+// 圆形图标按钮
+export const CircleBtn: Story = {
+  args: {
+    icon: 'search',
+  },
+  render: (args) => ({
+    components: { YuButton },
+    setup() {
+      return { args };
+    },
+    template: container(`<yu-button circle v-bind="args" />`),
+  }),
+  // 测试用例
+  play: async ({ canvasElement, args, step }) => {
+    // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
+    const canvas = within(canvasElement);
+    // 测试步骤：单次点击页面中第一个button按钮
+    await step('click circle icon button', async () => {
       await userEvent.click(canvas.getByRole('button'));
     });
     // 期望结果：验证 args 对象中的 onClick 方法是否被调用

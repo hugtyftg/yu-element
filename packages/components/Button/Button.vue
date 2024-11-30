@@ -57,7 +57,7 @@ defineExpose<ButtonExpose>({
     <!-- 不loading时的默认图标样式 -->
     <YuIcon v-if="props.icon && !props.loading" :icon="props.icon" :style="iconStyle" />
 
-    <slot>default slot</slot>
+    <slot></slot>
   </component>
 </template>
 
