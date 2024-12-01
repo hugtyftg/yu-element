@@ -593,6 +593,8 @@ npx vitepress init
 
 ![image-20241119203505446](README.assets/image-20241119203505446.png)
 
+https://yu-element.vercel.app/
+
 ## 参考
 
 https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html
@@ -881,7 +883,7 @@ style scoped标签局部引入样式防止污染。样式穿透需要借助:deep
 ## 主要逻辑
 
 1. props默认值覆盖
-2. 注册emit，并根据props确定是否要节流包装handler
+2. 注册emit，并根据props确定是否要throttle节流包装handler
 3. 插槽
 4. 通过define Expose向父组件暴露Button组件的dom
 5. 根据props中的type、size等绑定class
@@ -967,7 +969,7 @@ library.add(fas);
     <YuIcon v-if="props.icon && !props.loading" :icon="props.icon" :style="iconStyle" />
 ```
 
-## storybook 测试案例
+## storybook 测试用例
 
 ```js
   // 默认页的测试用例
@@ -986,3 +988,88 @@ library.add(fas);
 默认页面的interactions tab自动执行了测试步骤
 
 ![image-20241130144717822](README.assets/image-20241130144717822.png)
+
+# loadsh工具函数
+
+## omit
+
+## throttle
+
+### API
+
+throttle(func, [wait=0], [options={}])
+
+func (Function): 要节流的函数。
+
+[wait=0] (number): 需要节流的毫秒数。
+
+[options={}] (Object): 选项对象。
+
+[options.leading=true] (boolean): 指定调用在节流开始前，默认true。
+
+[options.trailing=true] (boolean): 指定调用在节流结束后，默认true。
+
+### **Demo**
+
+```sql
+Throttle: _.throttle(function() {
+  console.log("throttle");
+}, 5000, {
+  leading: true,
+  trailing: false
+})
+```
+
+testThrottle方法被绑定在一个按钮上，demo最终的效果是 ：
+
+1、按钮点击后控制台立马打印了throttle——19:39:00；
+
+2、5秒内点击多次按钮，最终只打印一次throttle——19:39:05前；
+
+3、5秒后再点击一次，会重新打印throttle——19:39:05后；
+
+PS：lodash默认trailing为true，那么最终的效果是在点击时会立即打印throttle，且5秒后又会再打印一次，即节流之前和之后都会执行该节流函数。
+
+### 场景——类似lol里的技能冷却cd
+
+（1）对于键盘事件，当用户键入非常频繁，但我们又必须要在一定时间（阀值）内执行处理函数的时候。例如：一些网页游戏的键盘事件。
+
+（2）对于鼠标移动和窗口滚动，鼠标的移动和窗口的滚动会带来大量的事件，但是在一段时间内又必须看到页面的效果。例如：对于可以拖动的div，如果使用debounce，那么div会在拖动停止后突然跳到目标位置；这时就需要使用throttle。
+
+### 总结
+
+预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新的时间周期。
+
+简言之：结束时间点不会随点击改变
+
+## debounce——类似lol里的回城重复取消执行
+
+### API
+
+debounce(func, [wait=0], [options={}])
+
+func (Function): 要防抖动的函数。
+
+[wait=0] (number): 需要延迟的毫秒数。
+
+[options={}] (Object): 选项对象。
+
+[options.leading=false] (boolean): 指定在延迟开始前调用，默认false。
+
+[options.maxWait] (number): 设置 func 允许被延迟的最大值。
+
+[options.trailing=true] (boolean): 指定在延迟结束后调用，默认true。
+
+### 总结
+
+当调用动作触发一段时间后，才会执行该动作，若在这段时间间隔内又调用此动作则将重新计算时间间隔。
+
+简言之：结束时间点会随点击改变
+
+### 场景
+
+（1）对于键盘事件，当用户输入比较频繁的时候，可以通过debounce合并键盘事件处理。例如：需要在用户输入完成时进行字符串校验。
+
+（2）对于ajax请求的情况。例如：当页面下拉超过一定范围就通过ajax请求新的页面内容，这时候可以通过debounce合并ajax请求事件。
+
+# Button和Icon测试覆盖率 

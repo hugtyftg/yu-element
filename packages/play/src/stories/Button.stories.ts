@@ -95,11 +95,11 @@ export const Default: Story & { args: { content: string } } = {
   play: async ({ canvasElement, args, step }) => {
     // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
     const canvas = within(canvasElement);
-    // 测试步骤：单次点击页面中第一个button按钮
+    // 测试步骤：多次点击页面中第一个button按钮
     await step('click button', async () => {
-      await userEvent.click(canvas.getByRole('button'));
+      await userEvent.tripleClick(canvas.getByRole('button'));
     });
-    // 期望结果：验证 args 对象中的 onClick 方法是否被调用
+    // 期望结果：验证 args 对象中的 onClick 方法是否被调用一次（节流）
     expect(args.onClick).toBeCalled();
   },
 };
@@ -120,12 +120,12 @@ export const CircleBtn: Story = {
   play: async ({ canvasElement, args, step }) => {
     // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
     const canvas = within(canvasElement);
-    // 测试步骤：单次点击页面中第一个button按钮
+    // 测试步骤：多次点击页面中第一个button按钮
     await step('click circle icon button', async () => {
-      await userEvent.click(canvas.getByRole('button'));
+      await userEvent.tripleClick(canvas.getByRole('button'));
     });
-    // 期望结果：验证 args 对象中的 onClick 方法是否被调用
-    expect(args.onClick).toBeCalled();
+    // 期望结果：验证 args 对象中的 onClick 方法是否被调用一次（节流）
+    expect(args.onClick).toHaveBeenCalledOnce();
   },
 };
 export default meta;
