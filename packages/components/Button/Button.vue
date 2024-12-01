@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 import type { ButtonEmits, ButtonExpose, ButtonProps } from "./types";
 import { throttle } from "lodash-es";
 import { YuIcon } from "yu-element";
+import { BUTTON_GROUP_KEY } from "./constant";
 defineOptions({
   name: "ErButton",
 });
@@ -11,9 +12,16 @@ defineOptions({
 const props = withDefaults(defineProps<ButtonProps>(), {
   tag: 'button',
   nativeType: 'button',
+  disabled: false,
   useThrottle: true,
   throttleDuration: 10000
 });
+
+/* 将ButtonGroup内的配置和props内的配置综合的到最终配置 */
+const context = inject(BUTTON_GROUP_KEY);
+const size = computed(() => context?.size ?? props?.size ?? 'default');
+const type = computed(() => context?.type ?? props?.type ?? 'primary');
+const disabled = computed(() => context?.disabled ?? props.disabled);
 
 /* 插槽 */
 const slots = defineSlots();
@@ -36,14 +44,14 @@ defineExpose<ButtonExpose>({
 
 <template>
   <component :is="tag" ref="_ref" class="yu-button" :class="{
-    [`yu-button--${type}`]: props.type,
-    [`yu-button--${size}`]: props.size,
+    [`yu-button--${type}`]: type,
+    [`yu-button--${size}`]: size,
     'is-plain': props.plain,
     'is-round': props.round,
     'is-circle': props.circle,
-    'is-disabled': props.disabled,
+    'is-disabled': disabled,
     'is-loading': props.loading,
-  }" :disabled="props.disabled || props.loading ? true : void 0" :autofocus="props.autofocus"
+  }" :disabled="disabled || props.loading ? true : void 0" :autofocus="props.autofocus"
     :type="props.tag === 'button' ? props.nativeType : void 0"
     @click="(e: MouseEvent) => props.useThrottle ? throttleHandleClick(e) : handleClick(e)">
 
