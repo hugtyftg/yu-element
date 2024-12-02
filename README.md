@@ -1378,3 +1378,99 @@ pnpm install -Dw npm-run-all@4.1.5
 "build": "pnpm --filter yu-element build"
 ```
 
+## 6.补齐core/package.json
+
+```
+{
+  "name": "yu-element",
+  "version": "1.0.0",
+  "description": "Components library by Vue3 + typescript",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/umd/index.umd.cjs",
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/core/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/es/index.js",
+      "require": "./dist/umd/index.umd.cjs",
+      "types": "./dist/types/core/index.d.ts"
+    },
+    "./dist/": {
+      "import": "./dist/",
+      "require": "./dist/"
+    }
+  },
+  "sideEffects": [
+    "./dist/index.css"
+  ],
+  "scripts": {
+    "build": "run-s build-main move-style",
+    "build-main": "run-p build:umd build:es",
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts",
+    "move-style": "move-file dist/es/index.css dist/index.css"
+  },
+  "keywords": [
+    "UI Library",
+    "Components Library",
+    "Vue3",
+    "Typescript",
+    "monorepo"
+  ],
+  "author": "hugtftg(MeiyuMa)",
+  "license": "ISC",
+  "dependencies": {
+    "@yu-element/components": "workspace:*"
+  },
+  "devDependencies": {
+    "vite-plugin-dts": "3.9.1"
+  }
+}
+```
+
+## package.json配置学习
+
+1. `name`：项目名称，必须是唯一的字符串，通常采用小写字母和连字符的组合。
+2. `version`：项目版本号，通常采用语义化版本号规范。
+3. `description`：项目描述。
+4. `type`：数组，在 npm 包中需要包含的文件或目录。
+5. `main`：指定了在使用 `require` 导入时的主入口文件路径，如 UMD 格式的主入口文件路径为 `./dist/umd/index.umd.cjs`。
+6. `module`：指定了在使用 ES module 导入时的主入口文件路径，如 ES module 格式的主入口文件路径为 `./dist/es/index.js`
+7. `types`：TypeScript 解析文件的入口, 该文件会被发布到 NPM, 并且可以被下载，为用户提供更加好的 IDE 支持。
+8. `exports`：配置了模块的导出方式，指定了不同情况下的导入路径和文件。
+   - `.`：指定了默认导出路径，包括了 ES module、CommonJS 和 TypeScript 类型定义文件的路径。
+   - `./dist/`：指定了在导入 `./dist/` 目录时的路径，包括了 ES module 和 CommonJS 的路径。
+9. `sideEffects`：boolean或文件数组，声明了工程是否存在副作用、哪些文件是有副作用的，也就是哪些文件会影响整个应用的行为，如给原型链上添加新方法、样式文件等。实际使用时慎重，它直接影响tree-shaking行为，可以参考[sideEffects与tree shaking](/Users/mmy/develop/Study-Notes/前端面试/前端工程化/sideEffects与tree shaking.md)
+10. `scripts`：定义了一些脚本命令，比如启动项目、运行测试等。
+11. `keywords`：项目的关键字列表，方便他人搜索和发现该项目。
+12. `author`：项目作者的信息，包括姓名、邮箱、网址等。
+13. `license`：项目的许可证类型，可以是自定义的许可证类型或者常见的开源许可证（如 MIT、Apache 等）。
+14. `dependencies`：项目所依赖的包的列表，这些包会在项目运行时自动安装，是**线上生产环境的依赖**，比如React Redux Mobx React-Router md5。
+15. `devDependencies`：项目开发过程中所需要的包的列表，这些包不会随项目一起发布，而是只在**开发时使用**，比如webpack、vite、rollup。
+16. `peerDependencies`：**项目的同级依赖，即项目所需要的模块被其他模块所依赖，确保版本兼容，npm不会自动安装同级依赖项**。是**给插件编写人员或者编写npm包的开发人员去使用的**。vite plugin插件不能凭空运行，需要依赖宿主环境，这里是依赖vite，如果dependencies里面已经安装过这个包，那么会直接复用，不再重复安装
+17. `repository`：项目代码仓库的信息，包括类型、网址等。
+18. `bugs`：项目的 bug 报告地址。
+19. `homepage`：项目的官方网站地址或者文档地址。
+
+> version 三段式版本号一般是1.0.0 大版本号 次版本号  修订号， 大版本号一般是有重大变化才会升级， 次版本号一般是增加功能进行升级， 修订号一般是修改bug进行升级
+
+## 注意：play/src/main.ts中需要再引入包样式
+
+```
+import { createApp } from 'vue';
+import App from './App.vue';
+// 导出installer
+import YuElement from 'yu-element';
+// 引入yu-element样式
+import 'yu-element/dist/index.css';
+
+createApp(App)
+  // 注册组件库
+  .use(YuElement)
+  .mount('#app');
+
+```
+

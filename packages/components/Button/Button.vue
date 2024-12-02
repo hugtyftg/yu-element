@@ -2,8 +2,8 @@
 import { computed, inject, ref } from "vue";
 import type { ButtonEmits, ButtonExpose, ButtonProps } from "./types";
 import { throttle } from "lodash-es";
-import { YuIcon } from "yu-element";
 import { BUTTON_GROUP_KEY } from "./constant";
+import { YuIcon } from "../Icon";
 defineOptions({
   name: "ErButton",
 });
