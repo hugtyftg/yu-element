@@ -1,6 +1,6 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3';
 import { expect, fn, userEvent, within } from '@storybook/test';
-import { YuButton } from 'yu-element';
+import { YuButton, YuButtonGroup } from 'yu-element';
 
 // 沙盒容器
 const container = (val: string) => `
@@ -73,6 +73,14 @@ const meta: Meta<typeof YuButton> = {
 // 页面初始展示默认配置
 export const Default: Story & { args: { content: string } } = {
   argTypes: {
+    type: {
+      control: { type: 'select' },
+      options: ['primary', 'success', 'warning', 'danger', 'info', ''],
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['large', 'default', 'small', ''],
+    },
     content: {
       control: {
         type: 'text',
@@ -104,7 +112,7 @@ export const Default: Story & { args: { content: string } } = {
   },
 };
 
-// 圆形图标按钮
+// 圆形图标按钮页面
 export const CircleBtn: Story = {
   args: {
     icon: 'search',
@@ -128,4 +136,64 @@ export const CircleBtn: Story = {
     expect(args.onClick).toHaveBeenCalledOnce();
   },
 };
+
+// 按钮组页面
+export const BtnGroup: Story & {
+  args: { content1: string; content2: string };
+} = {
+  // 控制参数类型
+  argTypes: {
+    type: {
+      control: { type: 'select' },
+      options: ['primary', 'success', 'warning', 'danger', 'info', ''],
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['large', 'default', 'small', ''],
+    },
+    disabled: {
+      control: 'boolean',
+    },
+    content1: {
+      control: { type: 'text' },
+      defaultValue: 'Button1',
+    },
+    content2: {
+      control: { type: 'text' },
+      defaultValue: 'Button2',
+    },
+  },
+  // 参数
+  args: {
+    round: true,
+    size: 'default',
+    type: 'primary',
+    disabled: false,
+    content1: 'Button1',
+    content2: 'Button2',
+  },
+  render: (args) => ({
+    components: { YuButton, YuButtonGroup },
+    setup() {
+      return { args };
+    },
+    template: container(`
+       <yu-button-group :type="args.type" :size="args.size" :disabled="args.disabled">
+         <yu-button v-bind="args">{{args.content1}}</yu-button>
+         <yu-button v-bind="args">{{args.content2}}</yu-button>
+       </yu-button-group>
+    `),
+  }),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    await step('click btn1', async () => {
+      await userEvent.click(canvas.getByText('Button1'));
+    });
+    await step('click btn2', async () => {
+      await userEvent.click(canvas.getByText('Button2'));
+    });
+    expect(args.onClick).toHaveBeenCalled();
+  },
+};
+
 export default meta;

@@ -23,9 +23,15 @@ defineOptions({
 const props = defineProps<ButtonGroupProps>()
 
 provide(BUTTON_GROUP_KEY, reactive({
-  size: toRef(props.size),
-  type: toRef(props.type),
-  disabled: toRef(props.disabled)
+  // size: toRef(props.size) 响应式不生效，因为它接受的是一个纯字符串而已
+  // 将响应式对象props的size属性变成一个可读写的ref
+  // size: toRef(props, 'size'),
+  // 将响应式对象props的size属性变成一个只读的ref
+  size: toRef(() => props.size),
+  // type: toRef(props, 'type'),
+  type: toRef(() => props.type),
+  // disabled: toRef(props, 'disabled')
+  disabled: toRef(() => props.disabled)
 }))
 
 </script>
