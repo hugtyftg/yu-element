@@ -1,7 +1,7 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3';
 import { expect, fn, userEvent, within } from '@storybook/test';
 import { YuButton, YuButtonGroup } from 'yu-element';
-
+import 'yu-element/dist/index.css';
 // 沙盒容器
 const container = (val: string) => `
   <div style="margin: 5px">
@@ -92,7 +92,7 @@ export const Default: Story & { args: { content: string } } = {
     size: 'default',
     content: 'Button',
   },
-  render: (args) => ({
+  render: (args: any) => ({
     components: { YuButton },
     setup() {
       return { args };
@@ -100,7 +100,15 @@ export const Default: Story & { args: { content: string } } = {
     template: container(content),
   }),
   // 默认页的测试用例
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({
+    canvasElement,
+    args,
+    step,
+  }: {
+    canvasElement: any;
+    args: any;
+    step: any;
+  }) => {
     // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
     const canvas = within(canvasElement);
     // 测试步骤：多次点击页面中第一个button按钮
@@ -117,7 +125,7 @@ export const CircleBtn: Story = {
   args: {
     icon: 'search',
   },
-  render: (args) => ({
+  render: (args: any) => ({
     components: { YuButton },
     setup() {
       return { args };
@@ -125,7 +133,15 @@ export const CircleBtn: Story = {
     template: container(`<yu-button circle v-bind="args" />`),
   }),
   // 测试用例
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({
+    canvasElement,
+    args,
+    step,
+  }: {
+    canvasElement: any;
+    args: any;
+    step: any;
+  }) => {
     // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
     const canvas = within(canvasElement);
     // 测试步骤：多次点击页面中第一个button按钮
@@ -172,7 +188,7 @@ export const BtnGroup: Story & {
     content1: 'Button1',
     content2: 'Button2',
   },
-  render: (args) => ({
+  render: (args: any) => ({
     components: { YuButton, YuButtonGroup },
     setup() {
       return { args };
@@ -184,7 +200,15 @@ export const BtnGroup: Story & {
        </yu-button-group>
     `),
   }),
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({
+    canvasElement,
+    args,
+    step,
+  }: {
+    canvasElement: any;
+    args: any;
+    step: any;
+  }) => {
     const canvas = within(canvasElement);
     await step('click btn1', async () => {
       await userEvent.click(canvas.getByText('Button1'));

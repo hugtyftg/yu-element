@@ -1246,7 +1246,7 @@ pnpm --filter yu-element install -Dw vite-plugin-dts@3.9.1
     "noFallthroughCasesInSwitch": true
   },
   // "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue"]
-  // 指定需要编译处理的文件列表
+  // 指定需要编译处理的文件列表（打包时生成这些文件的.d.ts类型文件）
   "include": [
     "packages/core/index.ts",
     "packages/hooks/**/*.ts",
@@ -1254,6 +1254,10 @@ pnpm --filter yu-element install -Dw vite-plugin-dts@3.9.1
     "packages/components/index.ts",
     "packages/components/**/*.ts",
     "packages/components/**/*.vue"
+  ],
+  // 指定不需要编译处理的文件列表（打包时不生成这些文件的.d.ts类型文件）
+  "exclude": [
+    "packages/components/vitest.config.ts"
   ]
 }
 ```
@@ -1482,7 +1486,9 @@ pnpm install -Dw npm-run-all@4.1.5
 
 > version 三段式版本号一般是1.0.0 大版本号 次版本号  修订号， 大版本号一般是有重大变化才会升级， 次版本号一般是增加功能进行升级， 修订号一般是修改bug进行升级
 
-## 注意：play/src/main.ts中需要再引入包样式
+## 注意
+
+### 1.play/src/main.ts中需要再引入包样式
 
 ```
 import { createApp } from 'vue';
@@ -1496,6 +1502,72 @@ createApp(App)
   // 注册组件库
   .use(YuElement)
   .mount('#app');
-
 ```
 
+### 2.将@yu-element/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错
+
+```
+// import { install } from '@yu-element/utils';
+import { install } from '../utils';
+import components from './components';
+// 全局导入样式
+import '@yu-element/theme/index.css';
+
+// 引入fontawesome
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+library.add(fas);
+
+// 注册所有组件的函数
+const installer = install(components);
+
+/* 将@yu-element/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错 */
+// export * from '@yu-element/components';
+export * from '../components';
+export default installer;
+```
+
+# 发布 release
+
+## nrm——npm源管理
+
+nrm可以管理不同的npm registry
+
+发包的时候确保是官方http://registry.npmjs.org
+
+```shell
+➜  yu-element git:(dev) ✗ nrm ls
+  npm ---------- https://registry.npmjs.org/
+  yarn --------- https://registry.yarnpkg.com/
+  tencent ------ https://mirrors.tencent.com/npm/
+  cnpm --------- https://r.cnpmjs.org/
+  taobao ------- https://registry.npmmirror.com/
+  npmMirror ---- https://skimdb.npmjs.com/registry/
+  huawei ------- https://repo.huaweicloud.com/repository/npm/
+➜  yu-element git:(dev) ✗ nrm use npm
+ SUCCESS  The registry has been changed to 'npm'.
+➜  yu-element git:(dev) ✗ npm config get registry
+https://registry.npmjs.org/
+➜  yu-element git:(dev) ✗ nrm test
+* npm ---------- 1195 ms
+  yarn --------- 1686 ms
+  tencent ------ 769 ms
+  cnpm --------- timeout (Fetch timeout over 5000 ms)
+  taobao ------- 311 ms
+  npmMirror ---- 2872 ms
+  huawei ------- 1021 ms
+```
+
+nrm安装和使用参考https://docs.1ddh.cn/dev-env/mac/configure-nrm
+
+## 注册用户
+
+npm adduser
+
+## 登陆
+
+npm login
+
+## 发布
+
+npm publish
