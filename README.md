@@ -1431,6 +1431,31 @@ pnpm install -Dw npm-run-all@4.1.5
 }
 ```
 
+## 7.修改依赖
+
+#### components/package.json
+
+将这两项依赖移动到core/package.json和根目录package.json
+
+```
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "async-validator": "^4.2.5"
+  },
+```
+
+#### core/package.json
+
+添加dependencies和peerDependencies
+
+![image-20241202210013644](README.assets/image-20241202210013644.png)
+
+#### 根目录package.json
+
+添加dependencies
+
+![image-20241202210045978](README.assets/image-20241202210045978.png)
+
 ## package.json配置学习
 
 1. `name`：项目名称，必须是唯一的字符串，通常采用小写字母和连字符的组合。

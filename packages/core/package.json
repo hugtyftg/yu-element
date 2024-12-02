@@ -40,10 +40,18 @@
   "author": "hugtftg(MeiyuMa)",
   "license": "ISC",
   "dependencies": {
-    "@yu-element/components": "workspace:*"
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@popperjs/core": "^2.11.8",
+    "async-validator": "^4.2.5"
   },
   "devDependencies": {
-    "vite-plugin-dts": "3.9.1"
+    "vite-plugin-dts": "3.9.1",
+    "@yu-element/components": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.19"
   },
   "repository": {
     "url": "https://github.com/hugtyftg/yu-element"
