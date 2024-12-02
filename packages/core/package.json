@@ -5,12 +5,16 @@
   "type": "module",
   "main": "index.ts",
   "scripts": {
-    "build:umd": "vite build --config vite.umd.config.ts"
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@yu-element/components": "workspace:*"
+  },
+  "devDependencies": {
+    "vite-plugin-dts": "3.9.1"
   }
 }
