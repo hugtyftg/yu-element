@@ -1072,4 +1072,309 @@ func (Function): 要防抖动的函数。
 
 （2）对于ajax请求的情况。例如：当页面下拉超过一定范围就通过ajax请求新的页面内容，这时候可以通过debounce合并ajax请求事件。
 
-# Button和Icon测试覆盖率 
+# 提高测试覆盖率
+
+
+
+# ButtonGroup
+
+## 主要目标
+
+1. 逻辑：ButtonGroup上设置的属性会同步注入给内含的所有button
+2. 样式：非第一个和最后一个的所有中间button的bound、circle样式
+
+## 实现
+
+TDD：Test-Driven-Development
+
+以插槽的方式传入Button（react中有children props传递结构、render props传递数据+结构）
+
+通过provide/inject的方式给Button slot传参并综合的到最终参数
+
+# 打包（基础）
+
+对core子包打包
+
+## UMD vite.umd.config.ts
+
+```
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    outDir: 'dist/umd',
+    lib: {
+      entry: resolve(__dirname, './index.ts'),
+      name: 'YuElement',
+      fileName: 'index',
+      formats: ['umd'],
+    },
+    // vite开发模式下基于esbuild，生产模式下基于rollup，正在开发roll down取代esbuild和rollup
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        exports: 'named',
+        globals: {
+          vue: 'Vue',
+        },
+        // 将style.css都打包到index.css
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') {
+            return 'index.css';
+          }
+          return assetInfo.name as string;
+        },
+      },
+    },
+  },
+});
+```
+
+## ESModule vite.es.config.ts
+
+```
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    outDir: 'dist/es',
+    lib: {
+      entry: resolve(__dirname, './index.ts'),
+      name: 'YuElement',
+      fileName: 'index',
+      formats: ['es'],
+    },
+    // vite开发模式下基于esbuild，生产模式下基于rollup，正在开发roll down取代esbuild和rollup
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        exports: 'named',
+        globals: {
+          vue: 'Vue',
+        },
+        // 将style.css都打包到index.css
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') {
+            return 'index.css';
+          }
+          return assetInfo.name as string;
+        },
+      },
+    },
+  },
+});
+```
+
+## package.json
+
+```
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts"
+  },
+```
+
+注意，必须"type": "module"才能保证umd下打包得到cjs、esm下打包得到js
+
+## 执行命令
+
+```
+pnpm --filter yu-element build:umd
+```
+
+# 打包（进阶）
+
+## 1.externals提取第三方依赖包
+
+```
+    // vite开发模式下基于esbuild，生产模式下基于rollup，正在开发roll down取代esbuild和rollup
+    rollupOptions: {
+      //
+      external: [
+        'vue',
+        '@fortawesome/fontawesome-svg-core',
+        '@fortawesome/free-solid-svg-icons',
+        '@fortawesome/vue-fontawesome',
+        '@popperjs/core',
+        'async-validator',
+      ],
+```
+
+## 2.自动生成类型文件
+
+### 2.1安装vite插件dts
+
+```
+pnpm --filter yu-element install -Dw vite-plugin-dts@3.9.1
+```
+
+### 2.2限制为哪些文件生成类型文件
+
+根目录下新建tsconfig.build.json，基于tsconfig.json修改include编译文件范围
+
+```
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  // "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue"]
+  // 指定需要编译处理的文件列表
+  "include": [
+    "packages/core/index.ts",
+    "packages/hooks/**/*.ts",
+    "packages/utils/**/*.ts",
+    "packages/components/index.ts",
+    "packages/components/**/*.ts",
+    "packages/components/**/*.vue"
+  ]
+}
+```
+
+### 2.3修改config
+
+```
+  plugins: [
+    vue(),
+    // 为esm分包书写.d.ts类型声明文件，并且按照tsconfig规则为某些文件生成类型文件
+    dts({
+      tsconfigPath: '../../tsconfig.build.json',
+      outDir: 'dist/type',
+    }),
+  ],
+```
+
+![image-20241202141301697](README.assets/image-20241202141301697.png)
+
+## 3.分包
+
+将下面部分分成独立的打包结果
+
+- 第三方依赖node_modules
+- utils
+- hooks
+- 每个component各成一个包
+
+使用manualChunks(id)，其中id是每个文件的绝对路径，如
+
+```
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/Button.vue?vue&type=script&setup=true&lang.ts
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/Button.vue?vue&type=style&index=0&scoped=3b551140&lang.css
+plugin-vue:export-helper
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/ButtonGroup.vue?vue&type=script&setup=true&lang.ts
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/ButtonGroup.vue?vue&type=style&index=0&scoped=6bf1dbf5&lang.css
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Icon/Icon.vue?vue&type=script&setup=true&lang.ts
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Icon/Icon.vue?vue&type=style&index=0&scoped=63131f47&lang.css
+/Users/mmy/develop/codes/My Projects/yu-element/node_modules/.pnpm/lodash-es@4.17.21/node_modules/lodash-es/_createMathOperation.js
+```
+
+```
+# vite.es.config.ts
+import { includes } from 'lodash-es';
+import { readdirSync } from 'fs';
+
+function getDirectoriesSync(basePath: string) {
+  const entries = readdirSync(basePath, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+}
+.....
+        // 分包
+        manualChunks(id) {
+          // 第三方依赖
+          if (includes(id, 'node_modules')) return 'vendor';
+          // hooks子包
+          if (includes(id, '/packages/hooks')) return 'hooks';
+          // utils子包和导出相关的工具
+          if (
+            includes(id, '/packages/utils') ||
+            includes(id, 'plugin-vue:export-helper')
+          ) {
+            return 'utils';
+          }
+          /* TODO: Button仍然在index内 */
+          // 每个component单独是一个文件chuck
+          const COMPS = getDirectoriesSync('../components');
+          for (const chunkName of COMPS) {
+            if (includes(id, `/packages/components/${chunkName}`))
+              return chunkName;
+          }
+        },
+```
+
+
+
+## 4.将index.css移到dist目录
+
+根目录下安装move-file-cli
+
+```
+pnpm install -Dw move-file-cli@3.0.0
+```
+
+修改core/packages.json
+
+```
+"move:css": "move-file dist/es/index.css dist/index.css"
+```
+
+## 5.串行并行执行打包命令
+
+考虑windows和posix系统兼容性问题，不直接书写shell script，而是通过第三方库（类似我们设置环境变量是通过corss-env，也不是直接写脚本）
+
+根目录下安装npm-run-all
+
+```
+pnpm install -Dw npm-run-all@4.1.5
+```
+
+- 串行执行 run-s
+- 并行执行 run-p
+
+期望：先并行打包umd和es两种类型，打包完毕之后再串行将dist/es/index.css移动到dist下
+
+```
+# packages/core/package.json
+	"scripts": {
+    "build": "run-s build-main move:css",
+    "build-main": "run-p build:umd build:es",
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts",
+    "move:css": "move-file dist/es/index.css dist/index.css"
+  },
+```
+
+将脚本集成到主包package.json内
+
+```
+"build": "pnpm --filter yu-element build"
+```
+

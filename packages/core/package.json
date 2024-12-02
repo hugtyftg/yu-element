@@ -5,8 +5,11 @@
   "type": "module",
   "main": "index.ts",
   "scripts": {
+    "build": "run-s build-main move:css",
+    "build-main": "run-p build:umd build:es",
     "build:umd": "vite build --config vite.umd.config.ts",
-    "build:es": "vite build --config vite.es.config.ts"
+    "build:es": "vite build --config vite.es.config.ts",
+    "move:css": "move-file dist/es/index.css dist/index.css"
   },
   "keywords": [],
   "author": "",
