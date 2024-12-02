@@ -2,6 +2,15 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
+import { includes } from 'lodash-es';
+import { readdirSync } from 'fs';
+
+function getDirectoriesSync(basePath: string) {
+  const entries = readdirSync(basePath, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+}
 
 export default defineConfig({
   plugins: [
@@ -42,6 +51,27 @@ export default defineConfig({
             return 'index.css';
           }
           return assetInfo.name as string;
+        },
+        // 分包
+        manualChunks(id) {
+          // 第三方依赖
+          if (includes(id, 'node_modules')) return 'vendor';
+          // hooks子包
+          if (includes(id, '/packages/hooks')) return 'hooks';
+          // utils子包和导出相关的工具
+          if (
+            includes(id, '/packages/utils') ||
+            includes(id, 'plugin-vue:export-helper')
+          ) {
+            return 'utils';
+          }
+          /* TODO: Button仍然在index内 */
+          // 每个component单独是一个文件chuck
+          const COMPS = getDirectoriesSync('../components');
+          for (const chunkName of COMPS) {
+            if (includes(id, `/packages/components/${chunkName}`))
+              return chunkName;
+          }
         },
       },
     },
