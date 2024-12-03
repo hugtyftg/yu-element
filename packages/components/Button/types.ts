@@ -19,6 +19,17 @@ export interface ButtonProps {
   useThrottle?: boolean;
   throttleDuration?: number;
 }
+export interface ButtonGroupProps {
+  size?: ButtonSize;
+  type?: ButtonType;
+  disabled?: boolean;
+}
+
+export interface ButtonGroupContext {
+  size?: ButtonSize;
+  type?: ButtonType;
+  disabled?: boolean;
+}
 
 export interface ButtonEmits {
   (event: 'click', val: MouseEvent): void;

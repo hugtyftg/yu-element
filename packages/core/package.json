@@ -1,15 +1,62 @@
 {
-  "name": "yu-element",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "@mameiyu/yu-element",
+  "version": "1.0.1",
+  "description": "Components library by Vue3 + typescript",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/umd/index.umd.cjs",
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/core/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/es/index.js",
+      "require": "./dist/umd/index.umd.cjs",
+      "types": "./dist/types/core/index.d.ts"
+    },
+    "./dist/": {
+      "import": "./dist/",
+      "require": "./dist/"
+    }
   },
-  "keywords": [],
-  "author": "",
+  "sideEffects": [
+    "./dist/index.css"
+  ],
+  "scripts": {
+    "build": "run-s clean build-main move-style",
+    "build-main": "run-p build:umd build:es",
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts",
+    "move-style": "move-file dist/es/index.css dist/index.css",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "UI Library",
+    "Components Library",
+    "Vue3",
+    "Typescript",
+    "monorepo"
+  ],
+  "author": "hugtftg(MeiyuMa)",
   "license": "ISC",
   "dependencies": {
-    "@yu-element/components": "workspace:*"
-  }
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@popperjs/core": "^2.11.8",
+    "async-validator": "^4.2.5"
+  },
+  "devDependencies": {
+    "@yu-element/components": "workspace:*",
+    "release-it": "^17.10.0",
+    "vite-plugin-dts": "3.9.1"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.19"
+  },
+  "repository": {
+    "url": "https://github.com/hugtyftg/yu-element"
+  },
+  "homepage": "https://yu-element.vercel.app"
 }

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3';
 import { expect, fn, userEvent, within } from '@storybook/test';
-import { YuButton } from 'yu-element';
-
+import { YuButton, YuButtonGroup } from 'yu-element';
+import 'yu-element/dist/index.css';
 // 沙盒容器
 const container = (val: string) => `
   <div style="margin: 5px">
@@ -11,7 +11,7 @@ const container = (val: string) => `
 // 沙盒内容
 const content = `<yu-button v-bind="args">{{args.content}}</yu-button>`;
 
-type Story = StoryObj<typeof YuButton> & { argTypes: ArgTypes };
+type Story = StoryObj<typeof YuButton> & { argTypes?: ArgTypes };
 
 // 配置页信息
 const meta: Meta<typeof YuButton> = {
@@ -73,6 +73,14 @@ const meta: Meta<typeof YuButton> = {
 // 页面初始展示默认配置
 export const Default: Story & { args: { content: string } } = {
   argTypes: {
+    type: {
+      control: { type: 'select' },
+      options: ['primary', 'success', 'warning', 'danger', 'info', ''],
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['large', 'default', 'small', ''],
+    },
     content: {
       control: {
         type: 'text',
@@ -84,7 +92,7 @@ export const Default: Story & { args: { content: string } } = {
     size: 'default',
     content: 'Button',
   },
-  render: (args) => ({
+  render: (args: any) => ({
     components: { YuButton },
     setup() {
       return { args };
@@ -92,15 +100,124 @@ export const Default: Story & { args: { content: string } } = {
     template: container(content),
   }),
   // 默认页的测试用例
-  play: async ({ canvasElement, args, step }) => {
+  play: async ({
+    canvasElement,
+    args,
+    step,
+  }: {
+    canvasElement: any;
+    args: any;
+    step: any;
+  }) => {
     // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
     const canvas = within(canvasElement);
-    // 测试步骤：单次点击页面中第一个button按钮
+    // 测试步骤：多次点击页面中第一个button按钮
     await step('click button', async () => {
-      await userEvent.click(canvas.getByRole('button'));
+      await userEvent.tripleClick(canvas.getByRole('button'));
     });
-    // 期望结果：验证 args 对象中的 onClick 方法是否被调用
+    // 期望结果：验证 args 对象中的 onClick 方法是否被调用一次（节流）
     expect(args.onClick).toBeCalled();
   },
 };
+
+// 圆形图标按钮页面
+export const CircleBtn: Story = {
+  args: {
+    icon: 'search',
+  },
+  render: (args: any) => ({
+    components: { YuButton },
+    setup() {
+      return { args };
+    },
+    template: container(`<yu-button circle v-bind="args" />`),
+  }),
+  // 测试用例
+  play: async ({
+    canvasElement,
+    args,
+    step,
+  }: {
+    canvasElement: any;
+    args: any;
+    step: any;
+  }) => {
+    // 进入页面：将 canvasElement 包装为一个测试工具对象 canvas
+    const canvas = within(canvasElement);
+    // 测试步骤：多次点击页面中第一个button按钮
+    await step('click circle icon button', async () => {
+      await userEvent.tripleClick(canvas.getByRole('button'));
+    });
+    // 期望结果：验证 args 对象中的 onClick 方法是否被调用一次（节流）
+    expect(args.onClick).toHaveBeenCalledOnce();
+  },
+};
+
+// 按钮组页面
+export const BtnGroup: Story & {
+  args: { content1: string; content2: string };
+} = {
+  // 控制参数类型
+  argTypes: {
+    type: {
+      control: { type: 'select' },
+      options: ['primary', 'success', 'warning', 'danger', 'info', ''],
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['large', 'default', 'small', ''],
+    },
+    disabled: {
+      control: 'boolean',
+    },
+    content1: {
+      control: { type: 'text' },
+      defaultValue: 'Button1',
+    },
+    content2: {
+      control: { type: 'text' },
+      defaultValue: 'Button2',
+    },
+  },
+  // 参数
+  args: {
+    round: true,
+    size: 'default',
+    type: 'primary',
+    disabled: false,
+    content1: 'Button1',
+    content2: 'Button2',
+  },
+  render: (args: any) => ({
+    components: { YuButton, YuButtonGroup },
+    setup() {
+      return { args };
+    },
+    template: container(`
+       <yu-button-group :type="args.type" :size="args.size" :disabled="args.disabled">
+         <yu-button v-bind="args">{{args.content1}}</yu-button>
+         <yu-button v-bind="args">{{args.content2}}</yu-button>
+       </yu-button-group>
+    `),
+  }),
+  play: async ({
+    canvasElement,
+    args,
+    step,
+  }: {
+    canvasElement: any;
+    args: any;
+    step: any;
+  }) => {
+    const canvas = within(canvasElement);
+    await step('click btn1', async () => {
+      await userEvent.click(canvas.getByText('Button1'));
+    });
+    await step('click btn2', async () => {
+      await userEvent.click(canvas.getByText('Button2'));
+    });
+    expect(args.onClick).toHaveBeenCalled();
+  },
+};
+
 export default meta;

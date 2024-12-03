@@ -28,9 +28,11 @@ export function install(components: Plugin[]) {
  * @returns 插件化的组件
  */
 export function withInstall<T>(component: T) {
-  (component as SFCWithInstall<T>).install = (app: App) => {
-    const name = (component as any).name;
-    app.component(name, component as Plugin);
-  };
+  if (component) {
+    (component as SFCWithInstall<T>).install = (app: App) => {
+      const name = (component as any).name;
+      app.component(name, component as Plugin);
+    };
+  }
   return component;
 }

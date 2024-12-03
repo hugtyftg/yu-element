@@ -22,7 +22,7 @@
 
 - utils 工具函数
 
-注意：本 monorepo 工程下的所有包，只有 core 和工程同名，其他包需要加上前缀`@yu-element/`以防和其他开源库重名
+注意：本 monorepo 工程下的所有包，只有 core 和工程同名，其他包需要加上前缀`@yu-elements/`以防和其他开源库重名
 
 # 项目搭建
 
@@ -137,9 +137,9 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 ```
   "dependencies": {
     "yu-element": "workspace:*",
-    "@yu-element/hooks": "workspace:*",
-    "@yu-element/theme": "workspace:*",
-    "@yu-element/utils": "workspace:*"
+    "@yu-elements/hooks": "workspace:*",
+    "@yu-elements/theme": "workspace:*",
+    "@yu-elements/utils": "workspace:*"
   }
 ```
 
@@ -148,18 +148,18 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 - components
 
   ```
-  pnpm add -D @vue/test-utils@^2.4.5 @vitest/coverage-v8@^1.4.0 jsdom@^24.0.0 --filter @yu-element/components
-  pnpm add @popperjs/core@^2.11.8 async-validator@^4.2.5 --filter @yu-element/components
+  pnpm add -D @vue/test-utils@^2.4.5 @vitest/coverage-v8@^1.4.0 jsdom@^24.0.0 --filter @yu-elements/components
+  pnpm add @popperjs/core@^2.11.8 async-validator@^4.2.5 --filter @yu-elements/components
   ```
 
 - core
 
-  在 core/package.json 中添加如下内容，说明 core 子包依赖内部子包@yu-element/components
+  在 core/package.json 中添加如下内容，说明 core 子包依赖内部子包@yu-elements/components
 
   ```
   {
     "dependencies": {
-      "@yu-element/components": "workspace:*"
+      "@yu-elements/components": "workspace:*"
     }
   }
   ```
@@ -167,7 +167,7 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 - docs
 
   ```
-  pnpm add -D vitepress@1.0.0-rc.44 --filter @yu-element/docs
+  pnpm add -D vitepress@1.0.0-rc.44 --filter @yu-elements/docs
   ```
 
 - play
@@ -374,15 +374,15 @@ export default [YuButton] as Plugin[];
 在 core/index.ts 中导出我们的 components
 
 ```
-import { install } from '@yu-element/utils';
+import { install } from '@yu-elements/utils';
 import components from './components';
 // 全局导入样式
-import '@yu-element/theme/index.css';
+import '@yu-elements/theme/index.css';
 
 // 注册所有组件的函数
 const installer = install(components);
 
-export * from '@yu-element/components';
+export * from '@yu-elements/components';
 export default installer;
 ```
 
@@ -494,7 +494,7 @@ hr {
 
 ```
 {
-  "name": "@yu-element/theme",
+  "name": "@yu-elements/theme",
   "version": "1.0.0",
   "description": "",
   "main": "index.css",
@@ -517,7 +517,7 @@ hr {
 
 ```
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev"
+    "dev": "pnpm --filter @yu-elements/play dev"
   },
 ```
 
@@ -578,10 +578,10 @@ npx vitepress init
 
 ```
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev",
-    "docs:dev": "pnpm --filter @yu-element/docs dev",
-    "docs:build": "pnpm --filter @yu-element/docs build",
-    "docs:preview": "pnpm --filter @yu-element/docs preview"
+    "dev": "pnpm --filter @yu-elements/play dev",
+    "docs:dev": "pnpm --filter @yu-elements/docs dev",
+    "docs:build": "pnpm --filter @yu-elements/docs build",
+    "docs:preview": "pnpm --filter @yu-elements/docs preview"
   },
 ```
 
@@ -592,6 +592,8 @@ npx vitepress init
 傻瓜式操作，注意配置CI脚本和output路径
 
 ![image-20241119203505446](README.assets/image-20241119203505446.png)
+
+https://yu-element.vercel.app/
 
 ## 参考
 
@@ -881,7 +883,7 @@ style scoped标签局部引入样式防止污染。样式穿透需要借助:deep
 ## 主要逻辑
 
 1. props默认值覆盖
-2. 注册emit，并根据props确定是否要节流包装handler
+2. 注册emit，并根据props确定是否要throttle节流包装handler
 3. 插槽
 4. 通过define Expose向父组件暴露Button组件的dom
 5. 根据props中的type、size等绑定class
@@ -915,13 +917,13 @@ play目录中的storybook命令可以本地开启storybook
 
 ```
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev",
-    "docs:dev": "pnpm --filter @yu-element/docs dev",
-    "docs:build": "pnpm --filter @yu-element/docs build",
-    "docs:preview": "pnpm --filter @yu-element/docs preview",
+    "dev": "pnpm --filter @yu-elements/play dev",
+    "docs:dev": "pnpm --filter @yu-elements/docs dev",
+    "docs:build": "pnpm --filter @yu-elements/docs build",
+    "docs:preview": "pnpm --filter @yu-elements/docs preview",
     "lint": "eslint .",
-    "test": "pnpm --filter @yu-element/components test",
-    "storybook": "pnpm --filter @yu-element/play storybook"
+    "test": "pnpm --filter @yu-elements/components test",
+    "storybook": "pnpm --filter @yu-elements/play storybook"
   },
 ```
 
@@ -967,7 +969,7 @@ library.add(fas);
     <YuIcon v-if="props.icon && !props.loading" :icon="props.icon" :style="iconStyle" />
 ```
 
-## storybook 测试案例
+## storybook 测试用例
 
 ```js
   // 默认页的测试用例
@@ -986,3 +988,608 @@ library.add(fas);
 默认页面的interactions tab自动执行了测试步骤
 
 ![image-20241130144717822](README.assets/image-20241130144717822.png)
+
+# loadsh工具函数
+
+## omit
+
+## throttle
+
+### API
+
+throttle(func, [wait=0], [options={}])
+
+func (Function): 要节流的函数。
+
+[wait=0] (number): 需要节流的毫秒数。
+
+[options={}] (Object): 选项对象。
+
+[options.leading=true] (boolean): 指定调用在节流开始前，默认true。
+
+[options.trailing=true] (boolean): 指定调用在节流结束后，默认true。
+
+### **Demo**
+
+```sql
+Throttle: _.throttle(function() {
+  console.log("throttle");
+}, 5000, {
+  leading: true,
+  trailing: false
+})
+```
+
+testThrottle方法被绑定在一个按钮上，demo最终的效果是 ：
+
+1、按钮点击后控制台立马打印了throttle——19:39:00；
+
+2、5秒内点击多次按钮，最终只打印一次throttle——19:39:05前；
+
+3、5秒后再点击一次，会重新打印throttle——19:39:05后；
+
+PS：lodash默认trailing为true，那么最终的效果是在点击时会立即打印throttle，且5秒后又会再打印一次，即节流之前和之后都会执行该节流函数。
+
+### 场景——类似lol里的技能冷却cd
+
+（1）对于键盘事件，当用户键入非常频繁，但我们又必须要在一定时间（阀值）内执行处理函数的时候。例如：一些网页游戏的键盘事件。
+
+（2）对于鼠标移动和窗口滚动，鼠标的移动和窗口的滚动会带来大量的事件，但是在一段时间内又必须看到页面的效果。例如：对于可以拖动的div，如果使用debounce，那么div会在拖动停止后突然跳到目标位置；这时就需要使用throttle。
+
+### 总结
+
+预先设定一个执行周期，当调用动作的时刻大于等于执行周期则执行该动作，然后进入下一个新的时间周期。
+
+简言之：结束时间点不会随点击改变
+
+## debounce——类似lol里的回城重复取消执行
+
+### API
+
+debounce(func, [wait=0], [options={}])
+
+func (Function): 要防抖动的函数。
+
+[wait=0] (number): 需要延迟的毫秒数。
+
+[options={}] (Object): 选项对象。
+
+[options.leading=false] (boolean): 指定在延迟开始前调用，默认false。
+
+[options.maxWait] (number): 设置 func 允许被延迟的最大值。
+
+[options.trailing=true] (boolean): 指定在延迟结束后调用，默认true。
+
+### 总结
+
+当调用动作触发一段时间后，才会执行该动作，若在这段时间间隔内又调用此动作则将重新计算时间间隔。
+
+简言之：结束时间点会随点击改变
+
+### 场景
+
+（1）对于键盘事件，当用户输入比较频繁的时候，可以通过debounce合并键盘事件处理。例如：需要在用户输入完成时进行字符串校验。
+
+（2）对于ajax请求的情况。例如：当页面下拉超过一定范围就通过ajax请求新的页面内容，这时候可以通过debounce合并ajax请求事件。
+
+# 提高测试覆盖率
+
+# ButtonGroup
+
+## 主要目标
+
+1. 逻辑：ButtonGroup上设置的属性会同步注入给内含的所有button
+2. 样式：非第一个和最后一个的所有中间button的bound、circle样式
+
+## 实现
+
+TDD：Test-Driven-Development
+
+以插槽的方式传入Button（react中有children props传递结构、render props传递数据+结构）
+
+通过provide/inject的方式给Button slot传参并综合的到最终参数
+
+# 打包（基础）
+
+对core子包打包
+
+## UMD vite.umd.config.ts
+
+```
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    outDir: 'dist/umd',
+    lib: {
+      entry: resolve(__dirname, './index.ts'),
+      name: 'YuElement',
+      fileName: 'index',
+      formats: ['umd'],
+    },
+    // vite开发模式下基于esbuild，生产模式下基于rollup，正在开发roll down取代esbuild和rollup
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        exports: 'named',
+        globals: {
+          vue: 'Vue',
+        },
+        // 将style.css都打包到index.css
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') {
+            return 'index.css';
+          }
+          return assetInfo.name as string;
+        },
+      },
+    },
+  },
+});
+```
+
+## ESModule vite.es.config.ts
+
+```
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    outDir: 'dist/es',
+    lib: {
+      entry: resolve(__dirname, './index.ts'),
+      name: 'YuElement',
+      fileName: 'index',
+      formats: ['es'],
+    },
+    // vite开发模式下基于esbuild，生产模式下基于rollup，正在开发roll down取代esbuild和rollup
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        exports: 'named',
+        globals: {
+          vue: 'Vue',
+        },
+        // 将style.css都打包到index.css
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') {
+            return 'index.css';
+          }
+          return assetInfo.name as string;
+        },
+      },
+    },
+  },
+});
+```
+
+## package.json
+
+```
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts"
+  },
+```
+
+注意，必须"type": "module"才能保证umd下打包得到cjs、esm下打包得到js
+
+## 执行命令
+
+```
+pnpm --filter yu-element build:umd
+```
+
+# 打包（进阶）
+
+## 1.externals提取第三方依赖包
+
+```
+    // vite开发模式下基于esbuild，生产模式下基于rollup，正在开发roll down取代esbuild和rollup
+    rollupOptions: {
+      //
+      external: [
+        'vue',
+        '@fortawesome/fontawesome-svg-core',
+        '@fortawesome/free-solid-svg-icons',
+        '@fortawesome/vue-fontawesome',
+        '@popperjs/core',
+        'async-validator',
+      ],
+```
+
+## 2.自动生成类型文件
+
+### 2.1安装vite插件dts
+
+```
+pnpm --filter yu-element install -Dw vite-plugin-dts@3.9.1
+```
+
+### 2.2限制为哪些文件生成类型文件
+
+根目录下新建tsconfig.build.json，基于tsconfig.json修改include编译文件范围
+
+```
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  // "include": ["packages/**/*.ts", "packages/**/*.tsx", "packages/**/*.vue"]
+  // 指定需要编译处理的文件列表（打包时生成这些文件的.d.ts类型文件）
+  "include": [
+    "packages/core/index.ts",
+    "packages/hooks/**/*.ts",
+    "packages/utils/**/*.ts",
+    "packages/components/index.ts",
+    "packages/components/**/*.ts",
+    "packages/components/**/*.vue"
+  ],
+  // 指定不需要编译处理的文件列表（打包时不生成这些文件的.d.ts类型文件）
+  "exclude": [
+    "packages/components/vitest.config.ts"
+  ]
+}
+```
+
+### 2.3修改config
+
+```
+  plugins: [
+    vue(),
+    // 为esm分包书写.d.ts类型声明文件，并且按照tsconfig规则为某些文件生成类型文件
+    dts({
+      tsconfigPath: '../../tsconfig.build.json',
+      outDir: 'dist/type',
+    }),
+  ],
+```
+
+![image-20241202141301697](README.assets/image-20241202141301697.png)
+
+## 3.分包
+
+将下面部分分成独立的打包结果
+
+- 第三方依赖node_modules
+- utils
+- hooks
+- 每个component各成一个包
+
+使用manualChunks(id)，其中id是每个文件的绝对路径，如
+
+```
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/Button.vue?vue&type=script&setup=true&lang.ts
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/Button.vue?vue&type=style&index=0&scoped=3b551140&lang.css
+plugin-vue:export-helper
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/ButtonGroup.vue?vue&type=script&setup=true&lang.ts
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Button/ButtonGroup.vue?vue&type=style&index=0&scoped=6bf1dbf5&lang.css
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Icon/Icon.vue?vue&type=script&setup=true&lang.ts
+/Users/mmy/develop/codes/My Projects/yu-element/packages/components/Icon/Icon.vue?vue&type=style&index=0&scoped=63131f47&lang.css
+/Users/mmy/develop/codes/My Projects/yu-element/node_modules/.pnpm/lodash-es@4.17.21/node_modules/lodash-es/_createMathOperation.js
+```
+
+```
+# vite.es.config.ts
+import { includes } from 'lodash-es';
+import { readdirSync } from 'fs';
+
+function getDirectoriesSync(basePath: string) {
+  const entries = readdirSync(basePath, { withFileTypes: true });
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+}
+.....
+        // 分包
+        manualChunks(id) {
+          // 第三方依赖
+          if (includes(id, 'node_modules')) return 'vendor';
+          // hooks子包
+          if (includes(id, '/packages/hooks')) return 'hooks';
+          // utils子包和导出相关的工具
+          if (
+            includes(id, '/packages/utils') ||
+            includes(id, 'plugin-vue:export-helper')
+          ) {
+            return 'utils';
+          }
+          /* TODO: Button仍然在index内 */
+          // 每个component单独是一个文件chuck
+          const COMPS = getDirectoriesSync('../components');
+          for (const chunkName of COMPS) {
+            if (includes(id, `/packages/components/${chunkName}`))
+              return chunkName;
+          }
+        },
+```
+
+## 4.将index.css移到dist目录
+
+根目录下安装move-file-cli
+
+```
+pnpm install -Dw move-file-cli@3.0.0
+```
+
+修改core/packages.json
+
+```
+"move:css": "move-file dist/es/index.css dist/index.css"
+```
+
+## 5.串行并行执行打包命令
+
+考虑windows和posix系统兼容性问题，不直接书写shell script，而是通过第三方库（类似我们设置环境变量是通过corss-env，也不是直接写脚本）
+
+根目录下安装npm-run-all
+
+```
+pnpm install -Dw npm-run-all@4.1.5
+```
+
+- 串行执行 run-s
+- 并行执行 run-p
+
+期望：先并行打包umd和es两种类型，打包完毕之后再串行将dist/es/index.css移动到dist下
+
+```
+# packages/core/package.json
+	"scripts": {
+    "build": "run-s build-main move:css",
+    "build-main": "run-p build:umd build:es",
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts",
+    "move:css": "move-file dist/es/index.css dist/index.css"
+  },
+```
+
+将脚本集成到主包package.json内
+
+```
+"build": "pnpm --filter yu-element build"
+```
+
+## 6.补齐core/package.json
+
+```
+{
+  "name": "yu-element",
+  "version": "1.0.0",
+  "description": "Components library by Vue3 + typescript",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/umd/index.umd.cjs",
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/core/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/es/index.js",
+      "require": "./dist/umd/index.umd.cjs",
+      "types": "./dist/types/core/index.d.ts"
+    },
+    "./dist/": {
+      "import": "./dist/",
+      "require": "./dist/"
+    }
+  },
+  "sideEffects": [
+    "./dist/index.css"
+  ],
+  "scripts": {
+    "build": "run-s build-main move-style",
+    "build-main": "run-p build:umd build:es",
+    "build:umd": "vite build --config vite.umd.config.ts",
+    "build:es": "vite build --config vite.es.config.ts",
+    "move-style": "move-file dist/es/index.css dist/index.css"
+  },
+  "keywords": [
+    "UI Library",
+    "Components Library",
+    "Vue3",
+    "Typescript",
+    "monorepo"
+  ],
+  "author": "hugtftg(MeiyuMa)",
+  "license": "ISC",
+  "dependencies": {
+    "@yu-elements/components": "workspace:*"
+  },
+  "devDependencies": {
+    "vite-plugin-dts": "3.9.1"
+  }
+}
+```
+
+## 7.修改依赖
+
+#### components/package.json
+
+将这两项依赖移动到core/package.json和根目录package.json
+
+```
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "async-validator": "^4.2.5"
+  },
+```
+
+#### core/package.json
+
+添加dependencies和peerDependencies
+
+![image-20241202210013644](README.assets/image-20241202210013644.png)
+
+#### 根目录package.json
+
+添加dependencies
+
+![image-20241202210045978](README.assets/image-20241202210045978.png)
+
+## package.json配置学习
+
+1. `name`：项目名称，必须是唯一的字符串，通常采用小写字母和连字符的组合。
+2. `version`：项目版本号，通常采用语义化版本号规范。
+3. `description`：项目描述。
+4. `type`：数组，在 npm 包中需要包含的文件或目录。
+5. `main`：指定了在使用 `require` 导入时的主入口文件路径，如 UMD 格式的主入口文件路径为 `./dist/umd/index.umd.cjs`。
+6. `module`：指定了在使用 ES module 导入时的主入口文件路径，如 ES module 格式的主入口文件路径为 `./dist/es/index.js`
+7. `types`：TypeScript 解析文件的入口, 该文件会被发布到 NPM, 并且可以被下载，为用户提供更加好的 IDE 支持。
+8. `exports`：配置了模块的导出方式，指定了不同情况下的导入路径和文件。
+   - `.`：指定了默认导出路径，包括了 ES module、CommonJS 和 TypeScript 类型定义文件的路径。
+   - `./dist/`：指定了在导入 `./dist/` 目录时的路径，包括了 ES module 和 CommonJS 的路径。
+9. `sideEffects`：boolean或文件数组，声明了工程是否存在副作用、哪些文件是有副作用的，也就是哪些文件会影响整个应用的行为，如给原型链上添加新方法、样式文件等。实际使用时慎重，它直接影响tree-shaking行为，可以参考[sideEffects与tree shaking](/Users/mmy/develop/Study-Notes/前端面试/前端工程化/sideEffects与tree shaking.md)
+10. `scripts`：定义了一些脚本命令，比如启动项目、运行测试等。
+11. `keywords`：项目的关键字列表，方便他人搜索和发现该项目。
+12. `author`：项目作者的信息，包括姓名、邮箱、网址等。
+13. `license`：项目的许可证类型，可以是自定义的许可证类型或者常见的开源许可证（如 MIT、Apache 等）。
+14. `dependencies`：项目所依赖的包的列表，这些包会在项目运行时自动安装，是**线上生产环境的依赖**，比如React Redux Mobx React-Router md5。
+15. `devDependencies`：项目开发过程中所需要的包的列表，这些包不会随项目一起发布，而是只在**开发时使用**，比如webpack、vite、rollup。
+16. `peerDependencies`：**项目的同级依赖，即项目所需要的模块被其他模块所依赖，确保版本兼容，npm不会自动安装同级依赖项**。是**给插件编写人员或者编写npm包的开发人员去使用的**。vite plugin插件不能凭空运行，需要依赖宿主环境，这里是依赖vite，如果dependencies里面已经安装过这个包，那么会直接复用，不再重复安装
+17. `repository`：项目代码仓库的信息，包括类型、网址等。
+18. `bugs`：项目的 bug 报告地址。
+19. `homepage`：项目的官方网站地址或者文档地址。
+
+> version 三段式版本号一般是1.0.0 大版本号 次版本号 修订号， 大版本号一般是有重大变化才会升级， 次版本号一般是增加功能进行升级， 修订号一般是修改bug进行升级
+
+## 注意
+
+### 1.play/src/main.ts中需要再引入包样式
+
+```
+import { createApp } from 'vue';
+import App from './App.vue';
+// 导出installer
+import YuElement from 'yu-element';
+// 引入yu-element样式
+import 'yu-element/dist/index.css';
+
+createApp(App)
+  // 注册组件库
+  .use(YuElement)
+  .mount('#app');
+```
+
+### 2.将@yu-elements/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错
+
+```
+// import { install } from '@yu-elements/utils';
+import { install } from '../utils';
+import components from './components';
+// 全局导入样式
+import '@yu-elements/theme/index.css';
+
+// 引入fontawesome
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+library.add(fas);
+
+// 注册所有组件的函数
+const installer = install(components);
+
+/* 将@yu-elements/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错 */
+// export * from '@yu-elements/components';
+export * from '../components';
+export default installer;
+```
+
+# 发布 release
+
+## nrm——npm源管理
+
+nrm可以管理不同的npm registry
+
+发包的时候确保是官方http://registry.npmjs.org
+
+```shell
+➜  yu-element git:(dev) ✗ nrm ls
+  npm ---------- https://registry.npmjs.org/
+  yarn --------- https://registry.yarnpkg.com/
+  tencent ------ https://mirrors.tencent.com/npm/
+  cnpm --------- https://r.cnpmjs.org/
+  taobao ------- https://registry.npmmirror.com/
+  npmMirror ---- https://skimdb.npmjs.com/registry/
+  huawei ------- https://repo.huaweicloud.com/repository/npm/
+➜  yu-element git:(dev) ✗ nrm use npm
+ SUCCESS  The registry has been changed to 'npm'.
+➜  yu-element git:(dev) ✗ npm config get registry
+https://registry.npmjs.org/
+➜  yu-element git:(dev) ✗ nrm test
+* npm ---------- 1195 ms
+  yarn --------- 1686 ms
+  tencent ------ 769 ms
+  cnpm --------- timeout (Fetch timeout over 5000 ms)
+  taobao ------- 311 ms
+  npmMirror ---- 2872 ms
+  huawei ------- 1021 ms
+```
+
+nrm安装和使用参考https://docs.1ddh.cn/dev-env/mac/configure-nrm
+
+## 注册用户
+
+npm adduser
+
+## 登陆
+
+npm login
+
+## 发布
+
+需要关闭代理
+
+npm publish
+
+### 重名问题
+
+## 版本号管理
+
+npm每次发包都要求version变化，手动更改package.json太繁琐，可以借助一些工具自动化更新version
+
+### changeset（pnpm官方推荐）
+
+### lerna（老牌monorepo解决方案）
+
+### release-it（方便易用）
+
+```
+# packages/core
+pnpm -Dw install release-it
+```
+
+
+
+#### rimraf
+
+每次打包前remove dist目录
+
