@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "test": "pnpm --filter @yu-element/components test",
     "storybook": "pnpm --filter @yu-element/play storybook",
-    "build": "pnpm --filter yu-element build"
+    "build": "pnpm --filter yu-element-core build"
   },
   "husky": {
     "hooks": {
@@ -58,7 +58,7 @@
     "vue-tsc": "^1.8.27"
   },
   "dependencies": {
-    "@mameiyu/yu-element": "workspace:*",
+    "yu-element-core": "workspace:*",
     "@yu-element/hooks": "workspace:*",
     "@yu-element/theme": "workspace:*",
     "@yu-element/utils": "workspace:*",
