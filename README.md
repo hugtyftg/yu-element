@@ -1566,7 +1566,11 @@ npm login
 
 ## 发布
 
+需要关闭代理
+
 npm publish
+
+### 重名问题
 
 ## 版本号管理
 
@@ -1578,6 +1582,14 @@ npm每次发包都要求version变化，手动更改package.json太繁琐，可�
 
 ### release-it（方便易用）
 
+```
+# packages/core
+pnpm -Dw install release-it
+```
+
+
+
 #### rimraf
 
 每次打包前remove dist目录
+

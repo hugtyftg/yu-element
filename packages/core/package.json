@@ -24,11 +24,12 @@
     "./dist/index.css"
   ],
   "scripts": {
-    "build": "run-s build-main move-style",
+    "build": "run-s clean build-main move-style",
     "build-main": "run-p build:umd build:es",
     "build:umd": "vite build --config vite.umd.config.ts",
     "build:es": "vite build --config vite.es.config.ts",
-    "move-style": "move-file dist/es/index.css dist/index.css"
+    "move-style": "move-file dist/es/index.css dist/index.css",
+    "clean": "rimraf dist"
   },
   "keywords": [
     "UI Library",
@@ -47,8 +48,9 @@
     "async-validator": "^4.2.5"
   },
   "devDependencies": {
-    "vite-plugin-dts": "3.9.1",
-    "@yu-element/components": "workspace:*"
+    "@yu-element/components": "workspace:*",
+    "release-it": "^17.10.0",
+    "vite-plugin-dts": "3.9.1"
   },
   "peerDependencies": {
     "vue": "^3.4.19"
