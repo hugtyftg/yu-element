@@ -22,7 +22,7 @@
 
 - utils 工具函数
 
-注意：本 monorepo 工程下的所有包，只有 core 和工程同名，其他包需要加上前缀`@yu-element/`以防和其他开源库重名
+注意：本 monorepo 工程下的所有包，只有 core 和工程同名，其他包需要加上前缀`@yu-elements/`以防和其他开源库重名
 
 # 项目搭建
 
@@ -137,9 +137,9 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 ```
   "dependencies": {
     "yu-element": "workspace:*",
-    "@yu-element/hooks": "workspace:*",
-    "@yu-element/theme": "workspace:*",
-    "@yu-element/utils": "workspace:*"
+    "@yu-elements/hooks": "workspace:*",
+    "@yu-elements/theme": "workspace:*",
+    "@yu-elements/utils": "workspace:*"
   }
 ```
 
@@ -148,18 +148,18 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 - components
 
   ```
-  pnpm add -D @vue/test-utils@^2.4.5 @vitest/coverage-v8@^1.4.0 jsdom@^24.0.0 --filter @yu-element/components
-  pnpm add @popperjs/core@^2.11.8 async-validator@^4.2.5 --filter @yu-element/components
+  pnpm add -D @vue/test-utils@^2.4.5 @vitest/coverage-v8@^1.4.0 jsdom@^24.0.0 --filter @yu-elements/components
+  pnpm add @popperjs/core@^2.11.8 async-validator@^4.2.5 --filter @yu-elements/components
   ```
 
 - core
 
-  在 core/package.json 中添加如下内容，说明 core 子包依赖内部子包@yu-element/components
+  在 core/package.json 中添加如下内容，说明 core 子包依赖内部子包@yu-elements/components
 
   ```
   {
     "dependencies": {
-      "@yu-element/components": "workspace:*"
+      "@yu-elements/components": "workspace:*"
     }
   }
   ```
@@ -167,7 +167,7 @@ pnpm add -w lodash-es@^4.17.21 vue@^3.4.19
 - docs
 
   ```
-  pnpm add -D vitepress@1.0.0-rc.44 --filter @yu-element/docs
+  pnpm add -D vitepress@1.0.0-rc.44 --filter @yu-elements/docs
   ```
 
 - play
@@ -374,15 +374,15 @@ export default [YuButton] as Plugin[];
 在 core/index.ts 中导出我们的 components
 
 ```
-import { install } from '@yu-element/utils';
+import { install } from '@yu-elements/utils';
 import components from './components';
 // 全局导入样式
-import '@yu-element/theme/index.css';
+import '@yu-elements/theme/index.css';
 
 // 注册所有组件的函数
 const installer = install(components);
 
-export * from '@yu-element/components';
+export * from '@yu-elements/components';
 export default installer;
 ```
 
@@ -494,7 +494,7 @@ hr {
 
 ```
 {
-  "name": "@yu-element/theme",
+  "name": "@yu-elements/theme",
   "version": "1.0.0",
   "description": "",
   "main": "index.css",
@@ -517,7 +517,7 @@ hr {
 
 ```
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev"
+    "dev": "pnpm --filter @yu-elements/play dev"
   },
 ```
 
@@ -578,10 +578,10 @@ npx vitepress init
 
 ```
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev",
-    "docs:dev": "pnpm --filter @yu-element/docs dev",
-    "docs:build": "pnpm --filter @yu-element/docs build",
-    "docs:preview": "pnpm --filter @yu-element/docs preview"
+    "dev": "pnpm --filter @yu-elements/play dev",
+    "docs:dev": "pnpm --filter @yu-elements/docs dev",
+    "docs:build": "pnpm --filter @yu-elements/docs build",
+    "docs:preview": "pnpm --filter @yu-elements/docs preview"
   },
 ```
 
@@ -917,13 +917,13 @@ play目录中的storybook命令可以本地开启storybook
 
 ```
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev",
-    "docs:dev": "pnpm --filter @yu-element/docs dev",
-    "docs:build": "pnpm --filter @yu-element/docs build",
-    "docs:preview": "pnpm --filter @yu-element/docs preview",
+    "dev": "pnpm --filter @yu-elements/play dev",
+    "docs:dev": "pnpm --filter @yu-elements/docs dev",
+    "docs:build": "pnpm --filter @yu-elements/docs build",
+    "docs:preview": "pnpm --filter @yu-elements/docs preview",
     "lint": "eslint .",
-    "test": "pnpm --filter @yu-element/components test",
-    "storybook": "pnpm --filter @yu-element/play storybook"
+    "test": "pnpm --filter @yu-elements/components test",
+    "storybook": "pnpm --filter @yu-elements/play storybook"
   },
 ```
 
@@ -1073,8 +1073,6 @@ func (Function): 要防抖动的函数。
 （2）对于ajax请求的情况。例如：当页面下拉超过一定范围就通过ajax请求新的页面内容，这时候可以通过debounce合并ajax请求事件。
 
 # 提高测试覆盖率
-
-
 
 # ButtonGroup
 
@@ -1334,8 +1332,6 @@ function getDirectoriesSync(basePath: string) {
         },
 ```
 
-
-
 ## 4.将index.css移到dist目录
 
 根目录下安装move-file-cli
@@ -1427,7 +1423,7 @@ pnpm install -Dw npm-run-all@4.1.5
   "author": "hugtftg(MeiyuMa)",
   "license": "ISC",
   "dependencies": {
-    "@yu-element/components": "workspace:*"
+    "@yu-elements/components": "workspace:*"
   },
   "devDependencies": {
     "vite-plugin-dts": "3.9.1"
@@ -1484,7 +1480,7 @@ pnpm install -Dw npm-run-all@4.1.5
 18. `bugs`：项目的 bug 报告地址。
 19. `homepage`：项目的官方网站地址或者文档地址。
 
-> version 三段式版本号一般是1.0.0 大版本号 次版本号  修订号， 大版本号一般是有重大变化才会升级， 次版本号一般是增加功能进行升级， 修订号一般是修改bug进行升级
+> version 三段式版本号一般是1.0.0 大版本号 次版本号 修订号， 大版本号一般是有重大变化才会升级， 次版本号一般是增加功能进行升级， 修订号一般是修改bug进行升级
 
 ## 注意
 
@@ -1504,14 +1500,14 @@ createApp(App)
   .mount('#app');
 ```
 
-### 2.将@yu-element/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错
+### 2.将@yu-elements/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错
 
 ```
-// import { install } from '@yu-element/utils';
+// import { install } from '@yu-elements/utils';
 import { install } from '../utils';
 import components from './components';
 // 全局导入样式
-import '@yu-element/theme/index.css';
+import '@yu-elements/theme/index.css';
 
 // 引入fontawesome
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -1521,8 +1517,8 @@ library.add(fas);
 // 注册所有组件的函数
 const installer = install(components);
 
-/* 将@yu-element/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错 */
-// export * from '@yu-element/components';
+/* 将@yu-elements/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错 */
+// export * from '@yu-elements/components';
 export * from '../components';
 export default installer;
 ```
@@ -1571,3 +1567,17 @@ npm login
 ## 发布
 
 npm publish
+
+## 版本号管理
+
+npm每次发包都要求version变化，手动更改package.json太繁琐，可以借助一些工具自动化更新version
+
+### changeset（pnpm官方推荐）
+
+### lerna（老牌monorepo解决方案）
+
+### release-it（方便易用）
+
+#### rimraf
+
+每次打包前remove dist目录

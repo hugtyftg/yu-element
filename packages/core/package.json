@@ -1,6 +1,6 @@
 {
-  "name": "yu-element",
-  "version": "1.0.0",
+  "name": "@mameiyu/yu-element",
+  "version": "1.0.1",
   "description": "Components library by Vue3 + typescript",
   "type": "module",
   "files": [
