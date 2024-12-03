@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --filter @yu-element/play dev",
+    "dev": "pnpm run build && pnpm --filter @yu-element/play dev",
+    "storybook": "pnpm run build && pnpm --filter @yu-element/play storybook",
     "docs:dev": "pnpm --filter @yu-element/docs dev",
     "docs:build": "pnpm --filter @yu-element/docs build",
     "docs:preview": "pnpm --filter @yu-element/docs preview",
     "lint": "eslint .",
     "test": "pnpm --filter @yu-element/components test",
-    "storybook": "pnpm --filter @yu-element/play storybook",
     "build": "pnpm --filter yu-element-core build"
   },
   "husky": {
