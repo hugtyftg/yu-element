@@ -1,3 +1,5 @@
+import 'yu-element-core/dist/index.css';
+
 /** @type { import('@storybook/vue3').Preview } */
 const preview = {
   parameters: {

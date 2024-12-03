@@ -1500,25 +1500,25 @@ createApp(App)
   .mount('#app');
 ```
 
-### 2.将@yu-elements/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错
+### 2.将@yu-elements/components的引入路径修改为相对路径，否则打包结果types引用错误
+
+
 
 ```
-// import { install } from '@yu-elements/utils';
-import { install } from '../utils';
-import components from './components';
-// 全局导入样式
-import '@yu-elements/theme/index.css';
+/* 将@yu-element/components的引入路径修改为相对路径，否则打包结果types引用错误，没有引用dist内打包生成的types
 
-// 引入fontawesome
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-library.add(fas);
+  // core/dist/type/core/index.d.ts
+  // 正确的打包结果
+  declare const installer: (app: import('vue').App) => import('vue').Plugin[];
+  export * from '../components';
+  export default installer;
 
-// 注册所有组件的函数
-const installer = install(components);
-
-/* 将@yu-elements/components的引入路径修改为相对路径，否则dev正常，线上生产环境找不到包会报错 */
-// export * from '@yu-elements/components';
+  // 错误的打包结果，没有引用dist内打包生成的types
+  declare const installer: (app: import('vue').App) => import('vue').Plugin[];
+  export * from '@yu-element/components';
+  export default installer;
+*/
+// export * from '@yu-element/components';
 export * from '../components';
 export default installer;
 ```
@@ -1636,8 +1636,6 @@ import { YuButton, YuButtonGroup } from 'yu-element-core';
 import 'yu-element-core/dist/index.css';
 ```
 
-
-
 ## version版本号语义化
 
 在与异化版本控制（semantic versioning，简称SemVer）中，版本号主要有三个主要部分组成：主版本号（MAJOR）、次版本号（MINOR）和修订号（PATCH），格式为：`MAJOR.MINOR.PATCH`
@@ -1702,3 +1700,10 @@ pnpm -Dw install release-it
 #### 使用
 
 交互式命令工具
+
+# 踩坑指南
+
+## 1.安装依赖后一定要删除root package.json再pnpm i
+
+可以避免百分之八十的路径resolve error等棘手问题
+
