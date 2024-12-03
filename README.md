@@ -1523,7 +1523,11 @@ export * from '../components';
 export default installer;
 ```
 
-# 发布 release
+### 3.rimraf
+
+每次打包前remove dist目录
+
+# 发布 publish
 
 ## nrm——npm源管理
 
@@ -1558,21 +1562,113 @@ nrm安装和使用参考https://docs.1ddh.cn/dev-env/mac/configure-nrm
 
 ## 注册用户
 
+```
 npm adduser
+```
 
 ## 登陆
 
+```
 npm login
+```
 
 ## 发布
 
-需要关闭代理
+需要关闭代理，并且切换到npm registry
 
+```
 npm publish
+```
 
-### 重名问题
+## 发布重名问题
 
-## 版本号管理
+发布时可能我们的包名已存在，需要更改名字
+
+原来名字：yu-element
+
+新名字：yu-element-core
+
+### 1.core子包 package配置更改——name
+
+```
+  "name": "yu-element-core",
+```
+
+### 2.主包package配置更改——dependencies、scripts
+
+依赖：
+
+```
+  "dependencies": {
+    "yu-element-core": "workspace:*",
+```
+
+脚本：
+
+```
+    "build": "pnpm --filter yu-element-core build"
+```
+
+### 3.重新生成monorepo 依赖路径——pnpm install
+
+根目录下pnpm install，建立整个项目和子包以及子包内的连接关系
+
+这一步完成之后，其他子包内引用yu-element-core才不会报错
+
+### 4.修改play等子包引入core的路径
+
+```
+// play/src/main.ts
+// 导出installer
+import YuElement from 'yu-element-core';
+// 引入yu-element样式
+import 'yu-element-core/dist/index.css';
+```
+
+```
+// play/src/App.vue
+import { YuButton, YuButtonGroup } from 'yu-element-core'
+```
+
+```
+// play/src/stories/Button.stories.ts
+import { YuButton, YuButtonGroup } from 'yu-element-core';
+import 'yu-element-core/dist/index.css';
+```
+
+
+
+## version版本号语义化
+
+在与异化版本控制（semantic versioning，简称SemVer）中，版本号主要有三个主要部分组成：主版本号（MAJOR）、次版本号（MINOR）和修订号（PATCH），格式为：`MAJOR.MINOR.PATCH`
+
+主版本号一般是有重大变化才会升级， 次版本号一般是增加功能进行升级， 修订号一般是修改bug进行升级
+
+### 主版本号
+
+不兼容的API修改，
+
+该版本包含重大修改，使用此新版本的用户可能需要对代码进行相应修改
+
+### 次版本号
+
+添加向下兼容的功能
+
+新版本添加了新功能但现有的API保持不变，用户无需修改代码
+
+### 修订号（PATCH）
+
+修复bug更稳定
+
+### 预发布版本标识符
+
+如alpha、beta、rc等来表示开发中的版本，通常用于测试阶段
+
+### 构建元数据
+
+可以用于提供有关构建的附加信息，如构建时间或构建系统信息
+
+## version管理
 
 npm每次发包都要求version变化，手动更改package.json太繁琐，可以借助一些工具自动化更新version
 
@@ -1582,14 +1678,27 @@ npm每次发包都要求version变化，手动更改package.json太繁琐，可�
 
 ### release-it（方便易用）
 
+#### 安装
+
 ```
-# packages/core
+cd packages/core
 pnpm -Dw install release-it
 ```
 
+#### git建立本地分支与远程分支的关联
 
+每次release时默认执行的命令是git push，所以需要指定一下push的stream
 
-#### rimraf
+```
+➜  git checkout main
+➜  yu-element git:(main) ✗ git branch --set-upstream-to=origin/main main
+分支 'main' 设置为跟踪 'origin/main'。
+```
 
-每次打包前remove dist目录
+注意：`git push -u`是`git push --set-upstream`的缩写版本
 
+建立本地分支main与远程分支origin main的关联（track）。
+
+#### 使用
+
+交互式命令工具

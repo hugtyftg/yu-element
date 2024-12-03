@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 引入组件
 import { ref } from 'vue';
-import { YuButton, YuButtonGroup } from 'yu-element'
+import { YuButton, YuButtonGroup } from 'yu-element-core'
 import type { ButtonType } from '../../components/Button/types';
 
 // 深层透传attrs

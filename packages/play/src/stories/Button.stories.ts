@@ -1,7 +1,7 @@
 import type { Meta, StoryObj, ArgTypes } from '@storybook/vue3';
 import { expect, fn, userEvent, within } from '@storybook/test';
-import { YuButton, YuButtonGroup } from 'yu-element';
-import 'yu-element/dist/index.css';
+import { YuButton, YuButtonGroup } from 'yu-element-core';
+import 'yu-element-core/dist/index.css';
 // 沙盒容器
 const container = (val: string) => `
   <div style="margin: 5px">
