@@ -1,3 +1,7 @@
+# 项目来源
+
+https://www.bilibili.com/video/BV1wT42117jd?spm_id_from=333.788.videopod.sections&vd_source=d72819370cfa974d3b9e47dee41c7878
+
 # 项目亮点
 
 - Vite + Vitest + Vitepress 工具链
@@ -7,6 +11,25 @@
 - github actions 实现 CI/CD 自动化部署
 
 # 目录结构简介
+
+## 配置文件
+
+- .husky 配置 husky 钩子
+- .gitignore 配置 git 忽略文件
+- .nvmrc 配置 nvm 版本管理
+- commitlint.config.js 配置 commitlint 提交规范
+- .eslintrc.js 配置 eslint 格式化
+- package.json 配置项目依赖
+- pnpm-workspace.yaml 配置 monorepo 工作区
+- postcss.config.js 配置 postcss 插件
+- README.md 项目介绍
+- tsconfig.build.json 配置 typescript 编译
+- tsconfig.json 配置 typescript 编译
+- tsconfig.node.json 配置 typescript 编译
+
+## packages
+
+packages是 monorepo 项目的工作区，包含以下子包：
 
 - components 开发的组件
 
@@ -24,7 +47,7 @@
 
 注意：本 monorepo 工程下的所有包，只有 core 和工程同名，其他包需要加上前缀`@yu-elements/`以防和其他开源库重名
 
-# 项目搭建
+# monorepo项目搭建
 
 ## [项目初始化](https://ericwxy.github.io/eric-wiki/my-projects/eric-ui/start.html#项目初始化)
 
@@ -644,14 +667,60 @@ nvm use xxx
 ->       system
 ```
 
-## commitlint规范commit message
+## commitizen规范书写commit message
+
+```
+// 根目录下安装
+➜ pnpm install -Dw commitizen cz-conventional-changelog @commitlint/config-conventional @commitlint/cli commitlint-config-cz cz-customizable
+```
+
+根目录增加其配置文件`.cz-config.js`
+
+```
+module.exports = {
+  types: [
+    { value: 'init', name: 'init:     初始提交' },
+    { value: 'feat', name: 'feat:     新特性、新功能' },
+    { value: 'fix', name: 'fix:      修复bug' },
+    { value: 'docs', name: 'docs:     文档变更' },
+    { value: 'style', name: 'style:    样式修改不影响逻辑' },
+    { value: 'perf', name: 'perf:     优化相关，比如提升性能、体验' },
+    { value: 'refactor', name: 'refactor: 代码重构' },
+    { value: 'test', name: 'test:     添加测试' },
+    { value: 'chore', name: 'chore:    更改配置文件' },
+    {
+      value: 'build',
+      name: 'build:    编译相关的修改，例如发布版本、对项目构建或者依赖的改动',
+    },
+    { value: 'ci', name: 'ci:       持续集成修改' },
+    { value: 'revert', name: 'revert:   回滚到上一个版本' },
+    { value: 'merge', name: 'merge:    合并其他分支代码' },
+  ],
+  messages: {
+    type: '选择一种你的提交类型:',
+    scope: '选择一个scope (可选):',
+    // 如果allowcustomscopes为true，则使用
+    customScope: '请输入修改范围(可选):',
+    subject: '请输入简要描述(必填):',
+    body: '详细描述. 使用"|"换行:\n',
+    breaking: 'Breaking Changes列表:\n',
+    footer: '关闭的issues列表. E.g.: #31, #34:\n',
+    confirmCommit: '确认提交?',
+  },
+  allowCustomScopes: true,
+  allowBreakingChanges: ['feat', 'fix'],
+  skipQuestions: ['breaking', 'footer'],
+};
+```
+
+## commitlint检查commit message
 
 ```
 // 安装commitlint
 pnpm install @commitlint/config-conventional @commitlint/cli -Dw
 ```
 
-根目录增加其配置文件`commitlint.config.js`
+根目录增加其配置文件`commitlint.config.cjs`
 
 ```
 module.exports = {
@@ -665,21 +734,37 @@ module.exports = {
 
 ```
 module.exports = {
-  extends: [
-    "@commitlint/config-conventional"
-  ],
+  extends: ['@commitlint/config-conventional'],
   rules: {
-    'type-enum': [2, 'always', [
-      'upd', 'feat', 'fix', 'refactor', 'docs', 'chore', 'style', 'revert'
-     ]],// type类型
+    'type-enum': [
+      2,
+      'always',
+      [
+        'init', // 初始化
+        'feat', // 新功能（feature）
+        'fix', // 修补bug
+        'ui', // 更新 ui
+        'docs', // 文档（documentation）
+        'style', // 格式（不影响代码运行的变动）
+        'perf', // 性能优化
+        'release', // 发布
+        'deploy', // 部署
+        'refactor', // 重构（即不是新增功能，也不是修改bug的代码变动）
+        'test', // 增加测试
+        'chore', // 构建过程或辅助工具的变动
+        'revert', // feat(pencil): add ‘graphiteWidth’ option (撤销之前的commit)
+        'merge', // 合并分支， 例如： merge（前端页面）： feature-xxxx修改线程地址
+        'build', // 打包
+      ],
+    ], // type类型
     'type-case': [0],
     'type-empty': [0],
     'scope-empty': [0],
     'scope-case': [0],
     'subject-full-stop': [0, 'never'],
     'subject-case': [0, 'never'],
-    'header-max-length': [0, 'always', 72]
-  }
+    'header-max-length': [0, 'always', 72],
+  },
 };
 ```
 
@@ -695,9 +780,9 @@ rule配置说明:：rule由name和配置数组组成，如：'name:[0, 'always',
 
 ## eslint+prettier统一代码风格
 
-eslint是一个开源项目，static code analysis tool，它可以静态分析js或JSX代码，按照内置规则或者自定义规则发现代码中的问题、提供自动修复方案，web端和服务器端都可以使用，任何框架下也都可以使用，甚至没有框架也可以使用
+### ESLint静态代码分析工具
 
-### ESLint
+eslint是一个静态代码分析工具，它可以静态分析js、ts或JSX、tsx代码，按照内置规则或者自定义规则发现代码中的问题、提供自动修复方案，web端和服务器端都可以使用，任何框架下也都可以使用，甚至没有框架也可以使用
 
 #### 1.安装
 
@@ -779,7 +864,9 @@ export default [
 ];
 ```
 
-### prettier
+### prettier代码格式化工具
+
+Prettier 是一个 Opinionated（有明确风格主张）的**代码格式化工具**，能帮开发者统一代码风格，提升代码可读性与一致性。
 
 #### 1.安装
 
@@ -927,7 +1014,7 @@ play目录中的storybook命令可以本地开启storybook
   },
 ```
 
-# Icon
+# Icon组件
 
 ## 安装并引入fontawesome
 
@@ -1459,16 +1546,17 @@ pnpm install -Dw npm-run-all@4.1.5
 ## package.json配置学习
 
 1. `name`：项目名称，必须是唯一的字符串，通常采用小写字母和连字符的组合。
-2. `version`：项目版本号，通常采用语义化版本号规范。
-3. `description`：项目描述。
-4. `type`：数组，在 npm 包中需要包含的文件或目录。
-5. `main`：指定了在使用 `require` 导入时的主入口文件路径，如 UMD 格式的主入口文件路径为 `./dist/umd/index.umd.cjs`。
+2. `version`：项目版本号，每次发布都不能一样，通常采用语义化版本号规范。
+3. **`files`：发布内容范围，数组，也就是在 npm 包中需要包含的文件或目录。**
+4. `description`：项目描述。
+5. `main`：指定了在使用 CommonJS`require` 导入时的主入口文件路径，如 UMD 格式的主入口文件路径为 `./dist/umd/index.umd.cjs`。
 6. `module`：指定了在使用 ES module 导入时的主入口文件路径，如 ES module 格式的主入口文件路径为 `./dist/es/index.js`
-7. `types`：TypeScript 解析文件的入口, 该文件会被发布到 NPM, 并且可以被下载，为用户提供更加好的 IDE 支持。
+7. `types`：TypeScript 解析文件的入口, 该文件会被发布到 NPM, 并且可以被下载，为用户提供更加好的 IDE 支持，例如`"types": "./dist/types/core/index.d.ts"`。
 8. `exports`：配置了模块的导出方式，指定了不同情况下的导入路径和文件。
    - `.`：指定了默认导出路径，包括了 ES module、CommonJS 和 TypeScript 类型定义文件的路径。
    - `./dist/`：指定了在导入 `./dist/` 目录时的路径，包括了 ES module 和 CommonJS 的路径。
-9. `sideEffects`：boolean或文件数组，声明了工程是否存在副作用、哪些文件是有副作用的，也就是哪些文件会影响整个应用的行为，如给原型链上添加新方法、样式文件等。实际使用时慎重，它直接影响tree-shaking行为，可以参考[sideEffects与tree shaking](/Users/mmy/develop/Study-Notes/前端面试/前端工程化/sideEffects与tree shaking.md)
+9. `sideEffects`：boolean或文件数组，声明了工程是否存在副作用、哪些文件是有副作用的，直接影响tree-shaking行为，可以参考[sideEffects与tree shaking](/Users/mmy/develop/Study-Notes/前端面试/前端工程化/sideEffects与tree shaking.md)。
+   **webpack 会认为所有 `import 'xxx'` 语句是仅引入而未使用, 如果你错误的将其声明成了”无副作用”, 它们就会被 tree-shaking 掉, 并且由于 tree-shaking 仅在 production 模式生效, 本地开发时可能一切仍是正常的, 生产环境并不能及时发现问题**。参考<a href="https://libin1991.github.io/2019/05/01/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3sideEffects%E9%85%8D%E7%BD%AE/">深入理解sideEffects配置</a>
 10. `scripts`：定义了一些脚本命令，比如启动项目、运行测试等。
 11. `keywords`：项目的关键字列表，方便他人搜索和发现该项目。
 12. `author`：项目作者的信息，包括姓名、邮箱、网址等。
@@ -1502,8 +1590,6 @@ createApp(App)
 
 ### 2.将@yu-elements/components的引入路径修改为相对路径，否则打包结果types引用错误
 
-
-
 ```
 /* 将@yu-element/components的引入路径修改为相对路径，否则打包结果types引用错误，没有引用dist内打包生成的types
 
@@ -1529,36 +1615,20 @@ export default installer;
 
 # 发布 publish
 
-## nrm——npm源管理
+# 发布 publish【以yu-elements为例】
 
-nrm可以管理不同的npm registry
+## 更新version
 
-发包的时候确保是官方http://registry.npmjs.org
+修改package.json里的version，必须和上次的不一样
 
-```shell
-➜  yu-element git:(dev) ✗ nrm ls
-  npm ---------- https://registry.npmjs.org/
-  yarn --------- https://registry.yarnpkg.com/
-  tencent ------ https://mirrors.tencent.com/npm/
-  cnpm --------- https://r.cnpmjs.org/
-  taobao ------- https://registry.npmmirror.com/
-  npmMirror ---- https://skimdb.npmjs.com/registry/
-  huawei ------- https://repo.huaweicloud.com/repository/npm/
-➜  yu-element git:(dev) ✗ nrm use npm
- SUCCESS  The registry has been changed to 'npm'.
-➜  yu-element git:(dev) ✗ npm config get registry
-https://registry.npmjs.org/
-➜  yu-element git:(dev) ✗ nrm test
-* npm ---------- 1195 ms
-  yarn --------- 1686 ms
-  tencent ------ 769 ms
-  cnpm --------- timeout (Fetch timeout over 5000 ms)
-  taobao ------- 311 ms
-  npmMirror ---- 2872 ms
-  huawei ------- 1021 ms
+## 打标签
+
+使用 Git 标签标记当前版本，便于后续追溯。
+
 ```
-
-nrm安装和使用参考https://docs.1ddh.cn/dev-env/mac/configure-nrm
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push origin v1.0.0
+```
 
 ## 注册用户
 
@@ -1572,29 +1642,39 @@ npm adduser
 npm login
 ```
 
-## 发布
+## 发布前预览
 
-需要关闭代理，并且切换到npm registry
+运行前可以使用 `npm pack` 命令可以预览将要发布的内容，它会生成一个 `.tgz` 包，你可以解压查看实际包含的文件。
+
+## 发布重名问题及解决方案
+
+### 命名检测
+
+发布时先检查当前名字有没有被用过
 
 ```
-npm publish
+npm view <package-name>
 ```
 
-## 发布重名问题
+可能我们的包名已存在，需要更改名字
 
-发布时可能我们的包名已存在，需要更改名字
+### singlerepo重名解决方案
+
+如果是single repo，直接修改package.json内的name即可，但如果是monorepo，解决起来要复杂得多
+
+### monorepo重名解决方案
 
 原来名字：yu-element
 
 新名字：yu-element-core
 
-### 1.core子包 package配置更改——name
+#### 1.core子包 package配置更改——name
 
 ```
   "name": "yu-element-core",
 ```
 
-### 2.主包package配置更改——dependencies、scripts
+#### 2.主包package配置更改——dependencies、scripts
 
 依赖：
 
@@ -1609,13 +1689,13 @@ npm publish
     "build": "pnpm --filter yu-element-core build"
 ```
 
-### 3.重新生成monorepo 依赖路径——pnpm install
+#### 3.重新生成monorepo 依赖路径——pnpm install
 
-根目录下pnpm install，建立整个项目和子包以及子包内的连接关系
+**根目录下pnpm install，建立整个项目和子包以及子包内的连接关系**
 
 这一步完成之后，其他子包内引用yu-element-core才不会报错
 
-### 4.修改play等子包引入core的路径
+#### 4.修改play等子包引入core的路径
 
 ```
 // play/src/main.ts
@@ -1635,6 +1715,22 @@ import { YuButton, YuButtonGroup } from 'yu-element-core'
 import { YuButton, YuButtonGroup } from 'yu-element-core';
 import 'yu-element-core/dist/index.css';
 ```
+
+## 发布
+
+需要**关闭代理**，并且切换到**npm registry**，在**要发布的package根目录下**（有package.json）运行：
+
+```
+nrm use npm
+npm publish
+```
+
+## 发布内容控制
+
+- package.json下的file字段
+
+- 默认情况下，`npm` 会忽略 `.gitignore` 和 `.npmignore` 文件中指定的文件或目录。
+- 某些特殊文件（如 [README.md](<javascript:void(0)>), [LICENSE](<javascript:void(0)>), [package.json](<javascript:void(0)>) 等）总是会被包含。
 
 ## version版本号语义化
 
@@ -1666,7 +1762,7 @@ import 'yu-element-core/dist/index.css';
 
 可以用于提供有关构建的附加信息，如构建时间或构建系统信息
 
-## version管理
+## 自动更新version
 
 npm每次发包都要求version变化，手动更改package.json太繁琐，可以借助一些工具自动化更新version
 
@@ -1675,6 +1771,21 @@ npm每次发包都要求version变化，手动更改package.json太繁琐，可�
 ### lerna（老牌monorepo解决方案）
 
 ### release-it（方便易用）
+
+Release-it是一款用于管理和发布应用程序的工具
+
+Release-it的主要作用包括：
+
+- **版本控制**：自动执行版本控制命令，如提交代码、创建标签等。
+- **构建和打包**：自动化构建和打包过程，确保每次部署都是最新的可执行代码。
+- **测试**：自动化运行单元测试、集成测试等，确保代码质量。
+- **部署**：将应用程序部署到不同的环境，如开发环境、测试环境、生产环境等。
+
+应用场景包括：
+
+- **持续集成**：在代码提交后自动构建和测试。
+- **持续部署**：将测试通过的代码自动部署到生产环境。
+- **多环境管理**：轻松管理开发、测试和生产环境的代码部署。
 
 #### 安装
 
@@ -1699,7 +1810,17 @@ pnpm -Dw install release-it
 
 #### 使用
 
-交互式命令工具
+终端内的交互式命令工具
+
+# 开发流程
+
+1. 需求分析
+2. 根据需求写测试用例
+3. 开发组件逻辑
+
+# Collapse折叠面板
+
+父子组件需要同步状态——通过provide/inject实现
 
 # 踩坑指南
 

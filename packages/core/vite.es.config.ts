@@ -24,14 +24,18 @@ export default defineConfig({
   build: {
     outDir: 'dist/es',
     lib: {
+      // 打包入口文件
       entry: resolve(__dirname, './index.ts'),
+      // UMD模式下本库会作为cdn从script中引入，此时本库暴露给window的全局变量名称
       name: 'YuElement',
+      // 打包输出的包文件名，默认package.json的name选项
       fileName: 'index',
+      // 默认的 formats 为 ['es'、'umd']，如果使用多个入口，则为 ['es'、'cjs']
       formats: ['es'],
     },
     // vite开发模式下基于esbuild，生产模式下基于rollup，正在开发roll down取代esbuild和rollup
     rollupOptions: {
-      // 剥离第三方库。我们在自己的库中需要使用第三方库，例如lodash等，又不想在最终生成的打包文件中出现jquery。这个时候我们就需要使用external属性。
+      // 外部化第三方依赖：external属性里写不想打包进去的第三方库，例如vue、lodash等
       external: [
         'vue',
         '@fortawesome/fontawesome-svg-core',
@@ -41,7 +45,9 @@ export default defineConfig({
         'async-validator',
       ],
       output: {
+        // 同时使用 默认导出（default export）和 具名导出（named exports），默认导出优先
         exports: 'named',
+        // 外部化第三方依赖的映射：在 UMD 构建模式下为外部化的第三方依赖提供一个全局变量
         globals: {
           vue: 'Vue',
         },
