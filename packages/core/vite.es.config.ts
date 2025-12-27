@@ -18,7 +18,7 @@ export default defineConfig({
     // 为esm分包书写.d.ts类型声明文件，并且遵守指定的tsconfig约束
     dts({
       tsconfigPath: '../../tsconfig.build.json',
-      outDir: 'dist/type',
+      outDir: 'dist/types',
     }),
   ],
   build: {

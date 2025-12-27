@@ -1551,10 +1551,11 @@ pnpm install -Dw npm-run-all@4.1.5
 4. `description`：项目描述。
 5. `main`：指定了在使用 CommonJS`require` 导入时的主入口文件路径，如 UMD 格式的主入口文件路径为 `./dist/umd/index.umd.cjs`。
 6. `module`：指定了在使用 ES module 导入时的主入口文件路径，如 ES module 格式的主入口文件路径为 `./dist/es/index.js`
-7. `types`：TypeScript 解析文件的入口, 该文件会被发布到 NPM, 并且可以被下载，为用户提供更加好的 IDE 支持，例如`"types": "./dist/types/core/index.d.ts"`。
-8. `exports`：配置了模块的导出方式，指定了不同情况下的导入路径和文件。
+7. `exports`：配置了模块的导出方式，指定了不同情况下的导入路径和文件。
    - `.`：指定了默认导出路径，包括了 ES module、CommonJS 和 TypeScript 类型定义文件的路径。
    - `./dist/`：指定了在导入 `./dist/` 目录时的路径，包括了 ES module 和 CommonJS 的路径。
+8. `types`：TypeScript 解析文件的入口, 该文件会被发布到 NPM, 并且可以被下载，为用户提供更加好的 IDE 支持，例如`"types": "./dist/types/core/index.d.ts"`。
+   **main、module、exports是三种常见的入口文件配置方式，具体区别可以参考https://mp.weixin.qq.com/s/LZgQVAGkZZIgdUFp5408Uw**
 9. `sideEffects`：boolean或文件数组，声明了工程是否存在副作用、哪些文件是有副作用的，直接影响tree-shaking行为，可以参考[sideEffects与tree shaking](/Users/mmy/develop/Study-Notes/前端面试/前端工程化/sideEffects与tree shaking.md)。
    **webpack 会认为所有 `import 'xxx'` 语句是仅引入而未使用, 如果你错误的将其声明成了”无副作用”, 它们就会被 tree-shaking 掉, 并且由于 tree-shaking 仅在 production 模式生效, 本地开发时可能一切仍是正常的, 生产环境并不能及时发现问题**。参考<a href="https://libin1991.github.io/2019/05/01/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3sideEffects%E9%85%8D%E7%BD%AE/">深入理解sideEffects配置</a>
 10. `scripts`：定义了一些脚本命令，比如启动项目、运行测试等。
