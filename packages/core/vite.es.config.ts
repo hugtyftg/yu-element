@@ -71,7 +71,6 @@ export default defineConfig({
           ) {
             return 'utils';
           }
-          /* TODO: Button仍然在index内 */
           // 每个component单独是一个文件chuck
           const COMPS = getDirectoriesSync('../components');
           for (const chunkName of COMPS) {

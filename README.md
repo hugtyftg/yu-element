@@ -1825,7 +1825,7 @@ pnpm -Dw install release-it
 
 # 踩坑指南
 
-## 1.安装依赖后一定要删除root package.json再pnpm i
+## 1.安装依赖后一定要删除root package-lock.yaml再pnpm i
 
 可以避免百分之八十的路径resolve error等棘手问题
 

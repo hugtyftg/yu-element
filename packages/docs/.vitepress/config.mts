@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Yu-Element",
   description: "A ElementPlus-like component library!",
+  base: '/yu-element/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
